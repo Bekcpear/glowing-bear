@@ -32,7 +32,7 @@ a:hover {
 }
 
 body {
-  background-image: url(/assets/img/iYIsBG-Desk.jpg);
+  background-image: url(/assets/img/iYIsBG-Desk-1.jpg);
   background-size: cover;
   background-color: #303030;
   color: #fafafa;
@@ -97,7 +97,6 @@ body {
 
 #topbar .title{
   overflow: overlay;
-  max-width: calc(100% - 245px);
 }
 
 .buffername:focus, .buffername:hover {
@@ -314,7 +313,7 @@ body {
 @media (max-width: 968px) {
 
   body {
-    background-image: url(/assets/img/iYIsBG.jpg);
+    background-image: url(/assets/img/iYIsBG-1.jpg);
     background-size: cover;
   }
 
@@ -434,6 +433,10 @@ body {
   .footer {
     width: calc(100% - 420px);
     margin: 0 180px 30px 240px !important;
+  }
+
+  #topbar .title{
+    max-width: calc(100% - 305px);
   }
 }
 
