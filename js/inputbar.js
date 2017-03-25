@@ -31,6 +31,7 @@ weechat.directive('inputBar', function() {
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function() {
                 $scope.command = emojione.shortnameToUnicode($scope.command);
+                document.getElementById("sendMessage-pre").textContent = $scope.command;
             };
 
             /*
@@ -163,6 +164,7 @@ weechat.directive('inputBar', function() {
 
                     // Empty the input after it's sent
                     $scope.command = '';
+                    document.getElementById("sendMessage-pre").textContent = $scope.command;
                 }
 
                 // New style clearing requires this, old does not
@@ -402,7 +404,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Enter to submit, shift-enter for newline
-                if (code == 13 && !$event.shiftKey && document.activeElement === inputNode) {
+                if (code == 13 && !$event.shiftKey && !utils.isMobileUi() && document.activeElement === inputNode) {
                     $event.preventDefault();
                     $scope.sendMessage();
                     return true;
