@@ -21,12 +21,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.command = '';
-    $scope.themes = ['dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
     settings.setDefaults({
-        'theme': 'dark',
+        'theme': 'iYIs',
         'host': 'localhost',
         'port': 9001,
         'ssl': (window.location.protocol === "https:"),
@@ -40,7 +40,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'useFavico': true,
         'soundnotification': true,
         'fontsize': '14px',
-        'fontfamily': (utils.isMobileUi() ? 'sans-serif' : 'Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace'),
+        'fontfamily': (utils.isMobileUi() ? 'Roboto Mono, Helvetica, Noto Sans Mono CJK SC, Noto Sans Mono CJK TC, Heiti SC, Heiti TC, sans-serif' : 'Roboto Mono, Inconsolata, Consolas, Noto Sans Mono CJK SC, Noto Sans Mono CJK TC, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
         'enableJSEmoji': (utils.isMobileUi() ? false : true),
         'enableMathjax': false,
