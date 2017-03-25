@@ -37,6 +37,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
     };
 
     var showNotification = function(buffer, title, body) {
+      /*
         if (serviceworker) {
             navigator.serviceWorker.ready.then(function(registration) {
                 registration.showNotification(title, {
@@ -46,7 +47,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', fu
                     tag: 'gb-highlight-vib'
                 });
             });
-        } else if (typeof Windows !== 'undefined' && typeof Windows.UI !== 'undefined' && typeof Windows.UI.Notifications !== 'undefined') {
+        } else*/ if (typeof Windows !== 'undefined' && typeof Windows.UI !== 'undefined' && typeof Windows.UI.Notifications !== 'undefined') {
 
             var winNotifications = Windows.UI.Notifications;
             var toastNotifier = winNotifications.ToastNotificationManager.createToastNotifier();
