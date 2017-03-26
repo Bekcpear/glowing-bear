@@ -237,7 +237,7 @@ body {
 #bufferlines .bufferline {
   padding: 5px;
   margin: 3px 0 3px 5px;
-  max-width: calc(100% - 20px);
+  max-width: calc(100% - 15px);
   background: rgba(33,33,33, 0.5);
   color: rgba(224,224,224,0.1);
   display: inline-block !important;
@@ -285,6 +285,25 @@ body {
 
 .footer {
   min-height: 34px;
+}
+
+.footer #msgSegmentedNoti {
+  width: 100%;
+  height: 20px;
+  max-height: 20px;
+  display: none;
+  overflow: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: rgba(222, 92, 92, 0.1);
+  border: 1px solid rgba(242, 72, 103, 0.5);
+  border-radius: 2px;
+  color: #fef7f7;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+  padding: 2px 10px;;
 }
 
 #sendMessage-input {
@@ -367,7 +386,7 @@ body {
   }
 
   #bufferlines {
-    padding-bottom: 50px;
+    padding-bottom: 54px;
     bottom: 0px;
   }
 
@@ -414,7 +433,7 @@ body {
   }
 
   #bufferlines {
-    padding-bottom: 90px;
+    padding-bottom: 94px;
     bottom: 0px;
   }
 
@@ -436,10 +455,6 @@ body {
     box-shadow: 0 1px 1px rgba(0,0,0,0.23), 0 1px 1px rgba(0,0,0,0.16);
     background: rgba(33,33,33, 0.2);
     font-family: "Roboto Mono", Helvetica, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Heiti SC", "Heiti TC", sans-serif;
-  }
-
-  #imgur-upload-progress {
-    padding-right: 40px;
   }
 
   .input-group .input-group-btn {

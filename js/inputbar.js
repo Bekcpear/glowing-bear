@@ -27,24 +27,62 @@ weechat.directive('inputBar', function() {
 
             // Expose utils to be able to check if we're on a mobile UI
             $scope.utils = utils;
+            $scope.noinput = true;
 
             var isiOS = utils.isiOS();
             var spreElem = document.getElementById("sendMessage-pre");
+            var spreElem_height_px_last = "";
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function() {
                 $scope.command = emojione.shortnameToUnicode($scope.command);
 
+                if ($scope.command != "") {
+                    $scope.noinput = false;
+
+                    var cmd_length = 0;
+                    var cmd_array = $scope.command.match(/[-_.!~*'()a-z0-9]/gi);
+                    if (cmd_array) {
+                      cmd_length += cmd_array.length;
+                    }
+                    var cmd_ext_array = encodeURIComponent($scope.command).match(/%[a-f0-9]{2}/gi);
+                    if (cmd_ext_array) {
+                      cmd_length += cmd_ext_array.length;
+                    }
+                    if (cmd_length > 412) {
+                      document.getElementById("msgSegmentedNoti").style.display = "block";
+                    } else {
+                      document.getElementById("msgSegmentedNoti").style.display = "none";
+                    }
+                } else {
+                    $scope.noinput = true;
+                    document.getElementById("msgSegmentedNoti").style.display = "none";
+                }
+
                 spreElem.textContent = $scope.command;
+                var spreElem_height_px = window.getComputedStyle(spreElem,null).getPropertyValue("height");
+
+                if (spreElem_height_px !== spreElem_height_px_last) {
+                    if (utils.isMobileUi()) {
+                      console.log("isMobileUi");
+                        var bufLinElemPB = parseInt(spreElem_height_px) + 20;
+                    } else {
+                      console.log("isn'tMobileUi");
+                        var bufLinElemPB = parseInt(spreElem_height_px) + 60;
+                    }
+                    document.getElementById("bufferlines").style.paddingBottom = bufLinElemPB.toString() + "px";
+                }
+
                 if (isiOS) {
                     if (utils.isMobileUi()) {
                       spreElem.style.paddingRight = "137px";
                     } else {
                       spreElem.style.paddingRight = "100px";
                     }
-                    document.getElementById("sendMessage").style.height = window.getComputedStyle(spreElem,null).getPropertyValue("height");
+                    document.getElementById("sendMessage").style.height = spreElem_height_px;
                     document.getElementById("sendMessage").style.width = window.getComputedStyle(spreElem,null).getPropertyValue("width");
                     document.getElementById("sendMessage").style.minWidth = window.getComputedStyle(spreElem,null).getPropertyValue("width");
                 }
+                spreElem_height_px_last = spreElem_height_px;
             };
 
             /*
@@ -178,6 +216,21 @@ weechat.directive('inputBar', function() {
                     // Empty the input after it's sent
                     $scope.command = '';
                     document.getElementById("sendMessage-pre").textContent = $scope.command;
+                    spreElem_height_px_last = "";
+
+                    if (utils.isMobileUi()) {
+                      document.getElementById("bufferlines").style.paddingBottom = "54px";
+                    } else {
+                      document.getElementById("bufferlines").style.paddingBottom = "94px";
+                    }
+
+                    $scope.noinput = true;
+                    document.getElementById("msgSegmentedNoti").style.display = "none";
+
+                    if (isiOS) {
+                        document.getElementById("sendMessage").style.height = "34px";
+                    }
+
                 }
 
                 // New style clearing requires this, old does not
@@ -389,7 +442,7 @@ weechat.directive('inputBar', function() {
                 var caretPos;
 
                 // Arrow up -> go up in history
-                if ($event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
+                if ($scope.noinput && $event.type === "keydown" && code === 38 && document.activeElement === inputNode) {
                     caretPos = inputNode.selectionStart;
                     if ($scope.command.slice(0, caretPos).indexOf("\n") !== -1) {
                         return false;
@@ -406,7 +459,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Arrow down -> go down in history
-                if ($event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
+                if ($scope.noinput && $event.type === "keydown" && code === 40 && document.activeElement === inputNode) {
                     caretPos = inputNode.selectionStart;
                     if ($scope.command.slice(caretPos).indexOf("\n") !== -1) {
                         return false;
