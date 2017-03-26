@@ -21,6 +21,11 @@ weechat.factory('utils', function() {
         return (document.body.clientWidth < mobile_cutoff);
     };
 
+    var isiOS = function() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    };
+
 
     // Inject a javascript (used by KaTeX)
     var inject_script = function(script_url) {
@@ -46,6 +51,7 @@ weechat.factory('utils', function() {
     	changeClassStyle: changeClassStyle,
     	getClassStyle: getClassStyle,
         isMobileUi: isMobileUi,
+        isiOS: isiOS,
         inject_script: inject_script,
         inject_css: inject_css,
     };

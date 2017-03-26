@@ -2,6 +2,10 @@
   outline: none !important;
 }
 
+button {
+  background-color: rgba(33,33,33, 0.2);
+}
+
 a, a:visited {
   color: #9fd0e6;
 }
@@ -118,7 +122,14 @@ body {
 
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
   outline: none;
-  background-color: rgba(33,33,33, 0.6);
+  background-color: rgba(33,33,33, 0.2);
+  border-color: #212121;
+  color: #fafafa;
+}
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+  outline: none;
+  background-color: rgba(33,33,33, 0.4);
   border-color: #212121;
   color: #fafafa;
 }
@@ -134,7 +145,7 @@ body {
   color: #fafafa;
 }
 
-.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary, .btn-default.active, .btn-default:active, .open>.dropdown-toggle.btn-default, .btn-primary.hover, .btn-primary:hover, .open>.dropdown-toggle.btn-primary, .btn-default.hover, .btn-default:hover, .open>.dropdown-toggle.btn-default, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
+.btn-primary.active, .btn-primary:active, .btn-default.active, .btn-default:active, .btn-primary.hover, .btn-primary:hover, .btn-default.hover, .btn-default:hover, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
   outline: none;
   background-color: rgba(33,33,33, 0.9);
   border-color: #212121;
@@ -261,6 +272,15 @@ body {
   clear: both;
   padding: 3px !important;
   color: #fafafa;
+}
+
+#bufferlines .bufferline .message .embed {
+  display: inline-block !important;
+}
+
+#bufferlines .bufferline .message .embed twitterwidget {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .footer {

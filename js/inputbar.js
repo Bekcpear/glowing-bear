@@ -28,10 +28,23 @@ weechat.directive('inputBar', function() {
             // Expose utils to be able to check if we're on a mobile UI
             $scope.utils = utils;
 
+            var isiOS = utils.isiOS();
+            var spreElem = document.getElementById("sendMessage-pre");
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function() {
                 $scope.command = emojione.shortnameToUnicode($scope.command);
-                document.getElementById("sendMessage-pre").textContent = $scope.command;
+
+                spreElem.textContent = $scope.command;
+                if (isiOS) {
+                    if (utils.isMobileUi()) {
+                      spreElem.style.paddingRight = "137px";
+                    } else {
+                      spreElem.style.paddingRight = "100px";
+                    }
+                    document.getElementById("sendMessage").style.height = window.getComputedStyle(spreElem,null).getPropertyValue("height");
+                    document.getElementById("sendMessage").style.width = window.getComputedStyle(spreElem,null).getPropertyValue("width");
+                    document.getElementById("sendMessage").style.minWidth = window.getComputedStyle(spreElem,null).getPropertyValue("width");
+                }
             };
 
             /*
