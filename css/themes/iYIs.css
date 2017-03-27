@@ -156,6 +156,86 @@ body {
   bottom: 95px;
 }
 
+#bufferlines tbody {
+  display: block;
+}
+
+#bufferlines tbody .buf-selfmsg {
+  background-color: rgba(33,33,33,0.3);
+}
+
+#bufferlines tbody .buf-selfmsg:hover {
+  background-color: rgba(33,33,33,0.5);
+}
+
+#bufferlines tbody .buf-selfmsg .prefix a {
+  color: rgba(250,250,250,0.8) !important;
+}
+
+#bufferlines tbody .buf-selfmsg .message {
+  color: rgba(250,250,250,0.8) !important;
+}
+
+#bufferlines tbody .buf-highlight {
+  font-weight: bold !important;
+  background-color: rgba(33,33,33,0.9);
+}
+
+#bufferlines tbody .buf-privmsg {
+}
+
+#bufferlines tbody .buf-err {
+  background: rgba(222, 92, 92, 0.2) !important;
+  border-bottom: 1px solid rgba(242, 72, 103, 0.5) !important;
+  color: #fef7f7 !important;
+  margin: 3px 0 !important;
+}
+
+#bufferlines tbody .buf-notprivmsg {
+  background-color: rgba(33,33,33, 0.2);
+  border-bottom: 1px solid rgba(33,33,33, 0.1);
+  color: rgba(224,224,224, 0.7);
+  border-radius: 0 !important;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  font-family: "Roboto Mono", monospace, "Noto Sans Mono CJK TC", "Noto Sans Mono CJK SC", Arial !important;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 0 5px;
+}
+
+#bufferlines tbody .buf-notprivmsg .highlight {
+  font-weight: normal;
+  padding: 0;
+  border-bottom: 0;
+}
+
+#bufferlines tbody .buf-notprivmsg .time, #bufferlines tbody .buf-notprivmsg .prefix, #bufferlines tbody .buf-notprivmsg .message {
+  display: inline-block;
+  float: none;
+  vertical-align: middle;
+  line-height: 18px;
+  padding: 3px 2px !important;
+}
+
+#bufferlines tbody .buf-notprivmsg .message {
+  width: auto !important;
+  margin-left: 10px;
+}
+
+#bufferlines tbody .buf-notprivmsg .time {
+  width: 60px;
+  overflow: hidden;
+  text-align: left;
+}
+
+#bufferlines tbody .buf-notprivmsg .prefix {
+  width: 40px;
+  overflow: hidden;
+  text-align: center;
+}
+
 .input-group #sendMessage {
   font-size: 14px !important;
   line-height: 20px !important;
@@ -439,6 +519,10 @@ body {
 
   #bufferlines .bufferline {
     background: rgba(33,33,33, 0.6);
+  }
+
+  #bufferlines tbody .buf-selfmsg:hover {
+    background-color: rgba(33,33,33,0.6);
   }
 
   #bufferlines .bufferline .prefix {

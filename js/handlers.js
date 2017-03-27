@@ -123,6 +123,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
             content += ")";
 
             var line = {
+                msgType: ["notprivmsg", "fakedate"],
                 buffer: buffer.id,
                 date: new_date,
                 prefix: '\u001943\u2500',

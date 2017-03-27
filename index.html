@@ -305,7 +305,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
             </tr>
           </tbody>
           <tbody ng-repeat="bufferline in bufferlines">
-            <tr class="bufferline">
+            <tr class="bufferline" ng-class="::bufferline.msgType">
               <td class="time">
                 <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
                   <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>

@@ -348,6 +348,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
      * BufferLine class
      */
     this.BufferLine = function(message) {
+        var msgType = message.msgType;
         var buffer = message.buffer;
         var date = message.date;
         var shortTime = $filter('date')(date, 'HH:mm');
@@ -375,6 +376,14 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             rtext += content[i].text;
         }
 
+        if (msgType && msgType[0] === "privmsg") {
+            msgType = "buf-privmsg buf-" + msgType[1];
+        } else if (msgType && msgType[0] === "notprivmsg") {
+            msgType = "buf-notprivmsg buf-" + msgType[1];
+        } else {
+            msgType = "buf-noverified";
+        }
+
         return {
             prefix: prefix,
             content: content,
@@ -386,8 +395,8 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             highlight: highlight,
             displayed: displayed,
             prefixtext: prefixtext,
-            text: rtext
-
+            text: rtext,
+            msgType: msgType
         };
 
     };

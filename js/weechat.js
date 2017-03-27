@@ -1003,6 +1003,23 @@
                 keys.forEach(function(key) {
                     tmp[key[0]] = self._runType(key[1]);
                 });
+                if (! tmp["tags_array"] || tmp["tags_array"][0] != "irc_privmsg") {
+                    tmp["msgType"] = ["notprivmsg", "normal"];
+                    if (tmp["tags_array"] && (tmp["tags_array"].length === 0 || tmp["tags_array"][0] === "relay_client") && tmp["prefix"] && tmp["prefix"].match(/=!=$/) ) {
+                        tmp["msgType"] = ["notprivmsg", "err"];
+                    }
+                } else if (tmp["tags_array"][0] === "irc_privmsg") {
+                    tmp["msgType"] = ["privmsg", "normal"];
+                    if (tmp["tags_array"][2] && tmp["tags_array"][2] === "self_msg") {
+                        tmp["msgType"] = ["privmsg", "selfmsg"];
+                    }
+                    if (tmp["highlight"] && tmp["highlight"] === 1) {
+                        tmp["msgType"] = ["privmsg", "highlight"];
+                    }
+                } else {
+                    tmp["msgType"] = [];
+                }
+//                console.log(tmp);
                 objs.push(tmp);
             }
 
