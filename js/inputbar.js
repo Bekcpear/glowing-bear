@@ -63,10 +63,8 @@ weechat.directive('inputBar', function() {
 
                 if (spreElem_height_px !== spreElem_height_px_last) {
                     if (utils.isMobileUi()) {
-                      console.log("isMobileUi");
                         var bufLinElemPB = parseInt(spreElem_height_px) + 20;
                     } else {
-                      console.log("isn'tMobileUi");
                         var bufLinElemPB = parseInt(spreElem_height_px) + 60;
                     }
                     document.getElementById("bufferlines").style.paddingBottom = bufLinElemPB.toString() + "px";

@@ -1005,7 +1005,7 @@
                 });
                 if (! tmp["tags_array"] || tmp["tags_array"][0] != "irc_privmsg") {
                     tmp["msgType"] = ["notprivmsg", "normal"];
-                    if (tmp["tags_array"] && (tmp["tags_array"].length === 0 || tmp["tags_array"][0] === "relay_client") && tmp["prefix"] && tmp["prefix"].match(/=!=$/) ) {
+                    if (tmp["tags_array"] && (tmp["tags_array"].length === 0 || tmp["tags_array"][0] != "irc_privmsg") && tmp["prefix"] && tmp["prefix"].match(/=!=$/) ) {
                         tmp["msgType"] = ["notprivmsg", "err"];
                     }
                 } else if (tmp["tags_array"][0] === "irc_privmsg") {
