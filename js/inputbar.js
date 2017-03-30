@@ -240,9 +240,44 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix) {
+            $rootScope.addMention = function(prefix, content) {
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
+
+                var quote = "";
+                for (var i = 0; i < content.length; ++i) {
+                  if ( ! content[i].text.match(/^.{0,1}Re\s/)) {
+                    quote += content[i].text;
+                  }
+                }
+                var quoteURIencoded = encodeURIComponent(quote.replace(/[-_.!~*'()a-z0-9]/gi, " "));
+
+                var quote_length = 0;
+                var quote_array = quoteURIencoded.match(/%f[a-f0-9%]{10}/gi);
+                if (quote_array) {
+                  quote_length += quote_array.length;
+                  quoteURIencoded = quoteURIencoded.replace(/%f[a-f0-9%]{10}/gi, "");
+                }
+                var quote_array = quoteURIencoded.match(/%e[a-f0-9%]{7}/gi);
+                if (quote_array) {
+                  quote_length += quote_array.length;
+                  quoteURIencoded = quoteURIencoded.replace(/%e[a-f0-9%]{7}/gi, "");
+                }
+                var quote_array = quoteURIencoded.match(/%[cd]{1}[a-f0-9%]{4}/gi);
+                if (quote_array) {
+                  quote_length += quote_array.length;
+                  quoteURIencoded = quoteURIencoded.replace(/%[cd]{1}[a-f0-9%]{4}/gi, "");
+                }
+                var quote_array = quoteURIencoded.match(/%[0-7]{1}[a-f0-9%]{1}/gi);
+                if (quote_array) {
+                  quote_length += quote_array.length;
+                  quoteURIencoded = quoteURIencoded.replace(/%[0-7]{1}[a-f0-9%]{1}/gi, "");
+                }
+
+                if (quote_length > 60) {
+                  quote = quote.substring(0, 60) + " ...";
+                }
+                //console.log(quote);
 
                 var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
                 var addColon = newValue.length === 0;
@@ -270,14 +305,21 @@ weechat.directive('inputBar', function() {
                     if (newValue.charAt(newValue.length - 1) !== ' ') {
                         newValue += ' ';
                     }
+                    newValue += nick;
                 }
                 // Add highlight to nicklist
-                newValue += nick;
                 if (addColon) {
-                    newValue += ': ';
+                    var nickMatch = quote.substring(nick.length + 2 , -1).match(/^[^:]+:\s/);
+                    if (nickMatch) {
+                        quote = nickMatch[0] === nick + ": " ? quote : nick + ": " + quote;
+                    } else {
+                        quote = nick + ": " + quote;
+                    }
+                    newValue = '「Re ' + quote + " 」 ";
                 }
                 $scope.command = newValue;
                 $scope.getInputNode().focus();
+                $scope.inputChanged();
             };
 
 
