@@ -250,33 +250,28 @@ weechat.directive('inputBar', function() {
                     quote += content[i].text;
                   }
                 }
-                var quoteURIencoded = encodeURIComponent(quote.replace(/[-_.!~*'()a-z0-9]/gi, " "));
+                var quoteURIencoded = encodeURIComponent(quote);
 
                 var quote_length = 0;
-                var quote_array = quoteURIencoded.match(/%f[a-f0-9%]{10}/gi);
-                if (quote_array) {
-                  quote_length += quote_array.length;
-                  quoteURIencoded = quoteURIencoded.replace(/%f[a-f0-9%]{10}/gi, "");
+                var quote_array = quoteURIencoded.match(/%f[a-f0-9%]{10}|%e[a-f0-9%]{7}|%[cd]{1}[a-f0-9%]{4}|%[0-7]{1}[a-f0-9%]{1}|[-_.!~*'()a-z0-9]/gi);
+                quote = "";
+                for (var i = 0; i < quote_array.length; ++i) {
+                  if (quote_array[i].match(/^%f[a-f0-9%]{10}$/i)) {
+                    quote_length += 4;
+                  } else if (quote_array[i].match(/^%e[a-f0-9%]{7}$/i)) {
+                    quote_length += 3;
+                  } else if (quote_array[i].match(/^%[cd]{1}[a-f0-9%]{4}$/i)) {
+                    quote_length += 2;
+                  } else if (quote_array[i].match(/^%[0-7]{1}[a-f0-9%]{1}|[-_.!~*'()a-z0-9]$/i)) {
+                    quote_length += 1;
+                  }
+                  if (quote_length > 50) {
+                    quote += " …";
+                    break;
+                  }
+                  quote += quote_array[i];
                 }
-                var quote_array = quoteURIencoded.match(/%e[a-f0-9%]{7}/gi);
-                if (quote_array) {
-                  quote_length += quote_array.length;
-                  quoteURIencoded = quoteURIencoded.replace(/%e[a-f0-9%]{7}/gi, "");
-                }
-                var quote_array = quoteURIencoded.match(/%[cd]{1}[a-f0-9%]{4}/gi);
-                if (quote_array) {
-                  quote_length += quote_array.length;
-                  quoteURIencoded = quoteURIencoded.replace(/%[cd]{1}[a-f0-9%]{4}/gi, "");
-                }
-                var quote_array = quoteURIencoded.match(/%[0-7]{1}[a-f0-9%]{1}/gi);
-                if (quote_array) {
-                  quote_length += quote_array.length;
-                  quoteURIencoded = quoteURIencoded.replace(/%[0-7]{1}[a-f0-9%]{1}/gi, "");
-                }
-
-                if (quote_length > 60) {
-                  quote = quote.substring(0, 60) + " ...";
-                }
+                quote = decodeURIComponent(quote);
                 //console.log(quote);
 
                 var newValue = $scope.command || '';  // can be undefined, in that case, use the empty string
