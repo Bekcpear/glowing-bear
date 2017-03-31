@@ -17,7 +17,7 @@ weechat.factory('utils', function() {
     var isMobileUi = function() {
         // TODO don't base detection solely on screen width
         // You are right. In the meantime I am renaming isMobileDevice to isMobileUi
-        var mobile_cutoff = 968;
+        var mobile_cutoff = 600;
         return (document.body.clientWidth < mobile_cutoff);
     };
 

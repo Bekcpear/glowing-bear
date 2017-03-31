@@ -1,93 +1,172 @@
+/*
+ * Written by Bekcpear <i@ume.ink>
+ *
+ * */
+
 * {
   outline: none !important;
 }
 
+::-webkit-scrollbar-track, #nicklist::-webkit-scrollbar-track {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: 0 0;
+}
+
+::-webkit-scrollbar, #nicklist::-webkit-scrollbar {
+  width: 10px;
+  background: 0 0;
+}
+
+/*
+#bufferlines::-webkit-scrollbar-thumb:hover, #nicklist::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(186, 233, 255, 0.4);
+}
+*/
+
+::-webkit-scrollbar-thumb, #nicklist::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #424242;
+}
+
 button {
-  background-color: rgba(33,33,33, 0.2);
+  background-color: #505050;
+  border: none;
 }
 
-a, a:visited {
-  color: #9fd0e6;
-}
-
-a:hover {
-  color: #9fd0e6;
-  text-decoration: underline;
-}
-
-::selection {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-::-moz-selection {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-::-webkit-selection {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-::-ms-selection {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-::-o-selection {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-body {
-  background-image: url(https://p.ume.ink/i/b8/de1674e16368080b26c168de83f5ff7368b538.jpg);
-  background-position: center top;
-  background-size: cover;
-  background-color: #303030;
+.btn-primary, .btn-default {
+  outline: none;
+  background-color: #505050;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border: none;
   color: #fafafa;
 }
 
-.panel {
-  background-color: rgba(33,33,33, 0.5);
+.btn.focus, .btn:focus, .btn:hover {
+  color: #fff;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+  outline: none;
+  background-color: #303030;
+  border: none;
+  color: #fafafa;
+}
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+  outline: none;
+  background-color: #303030;
+  border: none;
+  color: #fafafa;
+}
+
+.btn-primary.active, .btn-primary:active, .btn-default.active, .btn-default:active, .btn-primary.hover, .btn-primary:hover, .btn-default.hover, .btn-default:hover, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
+  outline: none;
+  background-color: #303030;
+  border: none;
+  color: #fafafa;
+}
+
+#bufferlines .btn {
+  font-family: inherit;
+  margin-left: 5px;
+}
+
+.panel-group .panel {
+  background-color: #424242;
+  border-radius: 20px !important;
+}
+
+.panel-group .panel input {
+  background: #323232;
+  color: #fafafa;
+  border-radius: 20px !important;
+  border: none;
+  box-shadow: none;
+}
+
+a, a:visited, a:focus {
+  color: #9fd0e6;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #b8deef;
+  text-decoration: none;
+}
+
+::selection {
+  background-color: #757575;
+}
+
+::-moz-selection {
+  background-color: #757575;
+}
+
+::-webkit-selection {
+  background-color: #757575;
+}
+
+::-ms-selection {
+  background-color: #757575;
+}
+
+::-o-selection {
+  background-color: #757575;
+}
+
+body {
+  background-color: #303030;
+  font-family: Roboto, Helvetica Neue, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", sans-serif !important;
+  color: #fafafa;
+}
+
+.modal-content {
+  background-color: #424242;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+}
+
+.modal-content #custom-css {
+  padding: 15px;
 }
 
 .modal-content .form-control {
   border: 0;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
 }
 
-.form-control {
+.modal-content .form-control {
   outline: none;
   background-color: rgba(33,33,33, 0.6);
   color: #fafafa;
 }
 
-.form-control:focus {
+.modal-content .form-control:focus {
   border-color: transparent;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(11,11,11,.6);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(11,11,11,.6);
-}
-
-.alert-danger {
-  color: #ebccd1;
-  background-color: rgba(33,33,33, 0.6);
-}
-
-#bufferFilter {
-  background-color: rgba(33,33,33, 0.6);
-  color: #fafafa;
-}
-
-#sidebar {
-  box-shadow: 0 2px 10px rgba(0,0,0,0.23), 0 2px 10px rgba(0,0,0,0.16)
-}
-
-#sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
-  background-color: rgba(33,33,33, 0.6);
-}
-
-.modal-content {
-  background: rgba(48,48,48, 0.9);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 .modal-header {
   padding: 0;
   margin: 15px;
+}
+
+.modal-header .close:hover {
+  color: #fafafa;
+}
+
+.modal-header .close {
+  font-family: monospace;
+  color: #e0e0e0;
 }
 
 .modal-footer {
@@ -96,132 +175,240 @@ body {
   border-top: 1px solid rgba(250, 250, 250, 0.3);
 }
 
-#topbar {
-  background: #212121;
+.version {
+  color: #ccc;
+  margin-top: -2px;
 }
 
-#topbar .title{
-  overflow: overlay;
-}
-
-.buffername:focus, .buffername:hover {
-  outline: none;
-  background: transparent;
-}
-
-.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover, .nav>li>a:focus, .nav>li>a:hover {
-  background-color: rgba(33,33,33, 0.8);
-}
-
-.nav-pills > li > a:hover, .nav-pills > li > a:hover span {
-  color: #fafafa;
-}
-
-.nav-pills > li > a:active, .nav-pills > li > a:active span {
-  background: transparent;
-}
-
-.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
-  outline: none;
-  background-color: rgba(33,33,33, 0.2);
-  border-color: #212121;
-  color: #fafafa;
-}
-
-.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
-  outline: none;
-  background-color: rgba(33,33,33, 0.4);
-  border-color: #212121;
-  color: #fafafa;
-}
-
-.btn.focus, .btn:focus, .btn:hover {
-  color: #fff;
-}
-
-.btn-primary, .btn-default {
-  outline: none;
+.alert-danger {
+  color: #ebccd1;
   background-color: rgba(33,33,33, 0.6);
-  border-color: #212121;
+}
+
+#content {
+  position: relative;
+  height: 100%;
+}
+
+#topbar {
+  position: fixed;
+  top: 0;
+  background: #212121;
+  height: 60px;
+  max-height: 60px;
+  padding: 12px 0;
+  -webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  -moz-box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  font-family: Roboto, Helvetica Neue, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", sans-serif !important;
+}
+
+#topbar .brand {
+  position: relative;
+  float: left;
+  height: 35px;
+  width: 120px;
+  margin: 0 20px;
+}
+
+#topbar .title {
+  position: relative;
+  left: initial !important;
+  right: initial !important;
+  float: left;
+  width: calc(100% - 320px);
+  text-align: center;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+#sidebar {
+  position: fixed;
+  top: 60px;
+  height: calc(100% - 60px);
+  min-height: calc(100% - 60px);
+  width: 200px !important;
+  padding: 0 !important;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+}
+
+#sidebar .actions {
+  position: absolute;
+  bottom: 0;
+  height: 100px;
+  padding: 10px 0;
+  width: 100%;
+}
+
+#sidebar .actions a {
+  display: block;
+  float: left;
+  clear: both;
+  width: 100%;
+  padding: 10px 0 10px 20px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 20px;
+  color: #757575;
+}
+
+#sidebar .actions a:hover {
+  background-color: #424242;
+}
+
+#sidebar #bufferFilter {
+  background-color: #303030;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
   color: #fafafa;
 }
 
-.btn-primary.active, .btn-primary:active, .btn-default.active, .btn-default:active, .btn-primary.hover, .btn-primary:hover, .btn-default.hover, .btn-default:hover, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
+#sidebar #bufferFilter:hover, #sidebar #bufferFilter:focus {
+  background-color: #212121;
+}
+
+#sidebar .buffername:focus, .buffername:hover {
   outline: none;
-  background-color: rgba(33,33,33, 0.9);
-  border-color: #212121;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  background: transparent;
+}
+
+#sidebar .nav-pills {
+  max-height: calc(100% - 100px);
+  overflow-x: hidden;
+  overflow-y: overlay;
+}
+
+#sidebar .nav-pills > li > a {
+  margin: 0 10px;
+  padding: 10px 15px !important;
+  font-size: 14px;
+  color: #eee;
+  border-bottom: 1px solid #383838;
+}
+
+#sidebar .nav-pills>li.active, .nav-pills>li.active:focus, .nav-pills>li.active:hover, .nav>li:focus, .nav>li:hover {
+  background-color: #424242;
+}
+
+#sidebar .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover, .nav>li>a:focus, .nav>li>a:hover {
+  background: 0 0;
+}
+
+#sidebar .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover, .nav>li>a:focus, .nav>li>a:hover {
+  background-color: transparent;
+}
+
+#sidebar .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
   color: #fafafa;
+}
+
+#sidebar .nav-pills > li > a:active, .nav-pills > li > a:active span, .nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
+  background: transparent;
+}
+
+#sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
+  background-color: transparent;
+  color: #757575;
 }
 
 #bufferlines {
-  bottom: 95px;
+  position: relative;
+  top: 60px;
+  height: calc(100% - 60px);
+  padding-top: 9px;
+  border-bottom: 1px solid #424242;
+}
+
+.content[sidebar-state=visible] #bufferlines {
+  margin-left: 205px;
+}
+
+#content .withnicklist {
+  margin-right: 145px !important;
 }
 
 #bufferlines tbody {
   display: block;
+  overflow: hidden;
 }
 
-#bufferlines tbody .buf-selfmsg {
-  float: right;
-  clear: both;
-  margin-right: 10px;
-  background-color: rgba(33,33,33,0.35);
-  transition-duration: 0.45s;
-  transition-property: background-color, color;
+#bufferlines tbody .fetchmorelines {
+  color: #fafafa;
+  padding: 3px 10px;
 }
 
-#bufferlines tbody .buf-selfmsg:hover {
-  background-color: rgba(33,33,33,0.5);
+#bufferlines tbody .fetchmorelines:hover {
+  background-color: #616161;
 }
 
-#bufferlines tbody .buf-selfmsg .prefix a {
-  color: rgba(250,250,250,0.8) !important;
+#bufferlines tbody .fetchmorelines + span {
+  color: #616161;
 }
 
-#bufferlines tbody .buf-selfmsg .message {
-  color: rgba(250,250,250,0.8) !important;
+#bufferlines tbody .bufferline td {
+  display: block;
+  float: left;
 }
 
-#bufferlines tbody .buf-highlight {
-  font-weight: bold !important;
-  background-color: rgba(33,33,33,0.9);
+
+/*
+#bufferlines .bufferline:hover {
+  color: rgba(224,224,224,0.7);
+}
+*/
+
+#bufferlines tbody .bufferline .highlight {
+  background-color: transparent;
 }
 
-#bufferlines tbody .buf-privmsg {
+#bufferlines tbody .buf-highlight .message {
+  background-color: #607d8b !important;
 }
 
-#bufferlines tbody .buf-err {
-  background: rgba(222, 92, 92, 0.2) !important;
-  border-bottom: 1px solid rgba(242, 72, 103, 0.5) !important;
-  color: #fef7f7 !important;
-  margin: 3px 0 !important;
+#bufferlines tbody .bufferline .message .embed {
+  display: inline-block !important;
+  margin: 0 !important;
+}
+
+#bufferlines tbody .bufferline .msgfrom {
+  color: #616161;
 }
 
 #bufferlines tbody .buf-notprivmsg {
-  background-color: rgba(33,33,33, 0.2);
-  border-bottom: 1px solid rgba(33,33,33, 0.1);
-  color: rgba(224,224,224, 0.7);
+  border-bottom: 1px solid rgba(33,33,33, 0.3);
+  color: #fafafa;
   border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  display: inline-block !important;
   float: left;
   clear: both;
   width: calc(100% - 5px);
   max-width: calc(100% - 5px);
   margin: 0 5px 0 0;
-  font-family: "Roboto Mono", monospace, "Noto Sans Mono CJK TC", "Noto Sans Mono CJK SC", Arial !important;
+  font-family: inherit;
   font-size: 12px;
   line-height: 16px;
   padding: 0 5px;
 }
 
-#bufferlines tbody .buf-notprivmsg .highlight {
-  font-weight: normal;
-  padding: 0;
-  border-bottom: 0;
+#bufferlines tbody .buf-notprivmsg .message {
+  background: 0 0;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
 }
 
 #bufferlines tbody .buf-notprivmsg .time, #bufferlines tbody .buf-notprivmsg .prefix, #bufferlines tbody .buf-notprivmsg .message {
   display: inline-block;
-  float: none;
+  float: left;
+  overflow: hidden;
   vertical-align: middle;
   line-height: 18px;
   padding: 3px 2px !important;
@@ -229,7 +416,7 @@ body {
 
 #bufferlines tbody .buf-notprivmsg .message {
   float: right;
-  width: calc(100% - 100px);
+  width: calc(100% - 110px);
   clear: none;
   display: block;
   text-align: left;
@@ -237,105 +424,37 @@ body {
 
 #bufferlines tbody .buf-notprivmsg .time {
   width: 60px;
-  overflow: hidden;
   text-align: left;
 }
 
 #bufferlines tbody .buf-notprivmsg .prefix {
   width: 40px;
-  overflow: hidden;
   text-align: center;
 }
 
-.input-group #sendMessage {
-  font-size: 14px !important;
-  line-height: 20px !important;
-  word-break: break-word;
-  white-space: pre-wrap;
-  height: 100%;
-  margin-bottom: 0 !important;
-  line-height: normal;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.23), 0 1px 1px rgba(0,0,0,0.16);
+#bufferlines tbody .buf-notprivmsg .prefix a {
+  color: #616161;
+}
+
+#bufferlines tbody .buf-err {
+  background: #c46056;
+  border-bottom: none !important;
+  color: #fafafa !important;
+  margin: 3px 0 !important;
+}
+
+#bufferlines tbody .buf-err .msgfrom a, #bufferlines tbody .buf-err .msgfrom {
   color: #fafafa;
-  background: rgba(33,33,33, 0.8);
 }
 
-.input-group #sendMessage:active, .input-group #sendMessage:focus {
-  border-bottom: 0;
-}
-
-.input-group .input-group-btn {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: 4;
-}
-
-.input-group .input-group-btn .btn-send {
-  background: rgba(33,33,33, 0);
-}
-
-.input-group .btn:focus, .input-group .btn:active, .input-group .btn:hover {
-  background: rgba(48,48,48, 0.4);
-}
-
-.input-group .btn {
-  display: block;
-  float: left;
-}
-
-#bufferlines .bufferline .message {
-  line-height: normal;
-}
-
-#bufferlines .bufferline .highlight {
-  font-weight: bold;
-  padding: 0 10px 0 5px;
-  border-bottom: 1px solid;
-}
-
-#bufferlines::-webkit-scrollbar-track, #nicklist::-webkit-scrollbar-track {
-  border-radius: 2px;
-  background: rgba(33,33,33, 0);
-}
-
-#bufferlines::-webkit-scrollbar, #nicklist::-webkit-scrollbar {
-  width: 5px;
-  background: rgba(33,33,33, 0.1);
-}
-
-#bufferlines::-webkit-scrollbar-thumb:hover, #nicklist::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(186, 233, 255, 0.4);
-}
-
-#bufferlines::-webkit-scrollbar-thumb, #nicklist::-webkit-scrollbar-thumb {
-  border-radius: 2px;
-  background-color: rgba(186, 233, 255, 0.2);
-}
-
-#nicklist {
-  height: calc(100% - 35px);
-  min-height: 0;
-  padding: 5px 7px 15px 5px;
-  overflow-y: overlay;
-  overflow-x: hidden;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.23), 0 -2px 10px rgba(0,0,0,0.16);
-  margin: 35px 0 0 0;
-  top: 0;
-  bottom: 0;
-}
-
-#bufferlines .bufferline:hover {
-  color: rgba(224,224,224,0.7);
-}
-
+/*
 #bufferlines .bufferline {
   float: left;
   clear: both;
   padding: 5px;
   margin: 3px 0 3px 5px;
   max-width: calc(100% - 15px);
-  background: rgba(33,33,33, 0.5);
+  background: 0 0;
   color: rgba(224,224,224,0.1);
   display: inline-block !important;
   transition-property: color;
@@ -349,45 +468,82 @@ body {
   -moz-border-bottom-left-radius: 5px;
   -moz-border-bottom-right-radius: 5px;
 }
+*/
 
-#bufferlines .bufferline .time {
-  float: right;
-  color: inherit;
-}
-
-#bufferlines .bufferline .prefix {
-  float: left;
-  font-weight: normal;
-  font-size: 0.9em;
-  max-width: 220px;
-  overflow: hidden;
-  padding: 0 20px 2px 0;
-}
-
-#bufferlines .bufferline .message {
+#bufferlines tbody .buf-privmsg {
   float: left;
   clear: both;
-  padding: 3px !important;
-  color: #fafafa;
-}
-
-#bufferlines .bufferline .message .embed {
-  display: inline-block !important;
-}
-
-#bufferlines .bufferline .message .embed twitterwidget {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.readmarker, .readmarker td {
+  width: calc( 100% - 30px);
+  padding: 5px 0 20px 5px;
+  position: relative;
   display: block;
 }
 
-#readmarker {
-  margin: 5px 20px;
-  border-top: 1px solid rgba(250, 250, 250, 0.2);
-  border-bottom: none;
+#bufferlines tbody .buf-privmsg .prefix, #bufferlines tbody .buf-privmsg .time {
+  display: inline-block;
+  float: right;
+  font-size: 11px;
+  padding-right: 5px;
+}
+
+#bufferlines tbody .buf-privmsg .time .date {
+  float: left;
+}
+
+#bufferlines tbody .buf-privmsg .time::before {
+  content: "•";
+  display: inline-block;
+  float: left;
+  padding-right: 5px;
+}
+
+#bufferlines tbody .buf-privmsg .prefix::before {
+  content: "from ";
+}
+
+#bufferlines tbody .buf-privmsg .msgfrom {
+  position: absolute;
+  left: 15px;
+  bottom: 6px;
+}
+
+#bufferlines tbody .buf-privmsg .message {
+  padding: 8px 15px !important;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  color: #fafafa;
+  line-height: normal;
+  background-color: #424242;
+  width: auto;
+}
+
+#bufferlines tbody .buf-selfmsg {
+  float: right !important;
+  margin-right: 5px;
+  max-width: calc(100% - 25px);
+}
+
+#bufferlines tbody .buf-selfmsg .message {
+  float: right;
+  background-color: #616161;
+}
+
+#bufferlines tbody .buf-selfmsg .prefix {
+  display: none !important;
+}
+
+#bufferlines tbody .buf-selfmsg .msgfrom {
+  right: 0;
+  left: initial;
+}
+
+#bufferlines tbody .buf-selfmsg .time::before {
+  content: "";
+}
+
+#bufferlines .readmarker, #bufferlines .readmarker td {
+  display: block;
 }
 
 #bufferlines .readmarker {
@@ -395,6 +551,19 @@ body {
   float: left;
   clear: both;
   width: 100%;
+}
+
+#bufferlines .readmarker::before {
+  display: block;
+  margin: 3px 0;
+  content: "⇑ last seen";
+  text-align: center;
+  font-size: 10px;
+  color: #616161;
+}
+
+#bufferlines .readmarker #readmarker {
+  display: none;
 }
 
 #bufferlines .fclear {
@@ -405,11 +574,59 @@ body {
   float: none !important;
 }
 
-.footer {
-  min-height: 34px;
+#nicklist::before {
+  content: "Nicklist:";
+  color: #616161;
+  padding-left: 5px;
 }
 
-.footer #msgSegmentedNoti {
+#nicklist {
+  position: fixed;
+  height: calc(100% - 60px);
+  min-height: 0;
+  width: 140px !important;
+  padding: 10px 0 20px 0;
+  overflow-y: overlay;
+  overflow-x: hidden;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  top: 60px;
+  bottom: 0;
+}
+
+#nicklist li:hover {
+  background-color: #424242;
+}
+
+#nicklist li {
+  padding: 0 5px;
+}
+
+#nicklist a {
+  padding: 5px;
+  margin: 0 5px;
+  border-bottom: #383838 1px solid;
+  color: #757575;
+}
+
+.footer {
+  min-height: 34px;
+  z-index: 99;
+}
+
+.footer #sendMessage-input {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.footer #sendMessage-input #inputform {
+  height: 100%;
+  margin: 0;
+}
+
+#inputform #msgSegmentedNoti {
   width: 100%;
   height: 20px;
   max-height: 20px;
@@ -418,29 +635,83 @@ body {
   position: absolute;
   bottom: 100%;
   left: 0;
-  background: rgba(222, 92, 92, 0.1);
-  border: 1px solid rgba(242, 72, 103, 0.5);
+  background: #c46056;
+  border: none;
   border-radius: 2px;
-  color: #fef7f7;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: #fafafa;
   font-size: 12px;
   line-height: 16px;
   text-align: left;
   padding: 2px 10px;;
 }
 
-#sendMessage-input {
+.footer  .input-group {
+  display: block;
   position: absolute;
+  height: 100%;
   width: 100%;
-  height: 100%;
 }
 
-#sendMessage-input #inputform {
+.input-group #sendMessage {
+  font-size: 14px !important;
+  line-height: 20px !important;
+  word-break: break-word;
+  white-space: pre-wrap;
   height: 100%;
+  margin-bottom: 0 !important;
+  line-height: normal;
+  color: #fafafa;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background: #424242;
+}
+
+.input-group #sendMessage:active, .input-group #sendMessage:focus {
+  border-bottom: 0;
+}
+
+.input-group #sendMessage::-webkit-input-placeholder {
+  opacity: 0.5;
+}
+.input-group #sendMessage::-moz-placeholder {
+  opacity: 0.5;
+}
+.input-group #sendMessage:-ms-input-placeholder {
+  opacity: 0.5;
+}
+.input-group #sendMessage:-moz-placeholder {
+  opacity: 0.5;
+}
+
+.input-group .input-group-btn {
+  position: absolute;
+  right: -2px;
+  bottom: 0;
+  z-index: 4;
+}
+
+.input-group .btn:focus, .input-group .btn:active {
+  background: #303030;
+  box-shadow: none;
+}
+
+.input-group .btn {
+  display: block;
+  float: left;
+  background-color: transparent;
+  border: none;
   margin: 0;
+  width: 40px;
+  height: 34px;
+  padding: 10px 13px;
 }
 
-#sendMessage-input .input-group {
-  height: 100%;
+.glyphicon {
+  top: -2px !important;
 }
 
 #sendMessage-pre {
@@ -464,18 +735,15 @@ body {
 }
 
 
-@media (max-width: 968px) {
+@media (max-width: 600px) {
 
-  body {
-  	background-image: url(https://p.ume.ink/i/b8/de1674e16368080b26c168de83f5ff7368b538.jpg);
-  	background-position: center top;
-    background-size: cover;
+  #topbar .brand {
+    width: 50px;
+    margin: 0 0 0 20px;
   }
 
-  #topbar .title{
-    max-width: calc(100% - 150px);
-    font-size: 16px;
-    font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
+  #topbar .title {
+    width: calc(100% - 140px);
   }
 
   .footer {
@@ -485,34 +753,37 @@ body {
   #sendMessage-pre {
     max-height: 74px;
     padding: 7px 132px 7px 12px;
-    font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
+    font-family: "Roboto Mono", Helvetica, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Heiti SC", "Heiti TC", sans-serif;
   }
 
   #nicklist {
-    height: calc(100% - 69px);
-    padding: 5px 7px 0 2px;
-    overflow-y: overlay;
-    overflow-x: hidden;
-    text-align: center;
-    position: fixed;
-    box-shadow: 0 -3px 3px rgba(0,0,0,0.23), 0 -3px 3px rgba(0,0,0,0.16);
-    margin: 35px 0 34px 5px;
-    top: 0;
-    bottom: 0;
+    margin: 0;
+    text-align: left;
+    padding-bottom: 50px;
   }
 
   #bufferlines {
-    padding-bottom: 54px;
+    padding-bottom: 20px;
+    margin-bottom: 34px;
+    height: calc(100% - 94px);
+    border-bottom: none;
     bottom: 0px;
+  }
+
+  .content[sidebar-state=visible] #bufferlines {
+    margin-left: 5px;
   }
 
   .input-group #sendMessage {
     min-height: 34px;
     padding: 7px 132px 7px 12px;
-    font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
+    font-family: "Roboto Mono", Helvetica, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Heiti SC", "Heiti TC", sans-serif;
   }
 
   .input-group #sendMessage:active, .input-group #sendMessage:focus {
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
     border-bottom: 0;
   }
 
@@ -520,45 +791,41 @@ body {
     position: fixed;
     width: 120px;
     height: 34px;
-    right: 0;
-  }
-
-  .input-group .input-group-btn .btn-complete-nick {
-    background: rgba(33,33,33, 0);
   }
 
 }
 
-@media (min-width: 969px) {
+@media (min-width: 601px) {
 
   .footer {
-    width: calc(100% - 325px);
-    margin: 0 140px 30px 185px !important;
-    max-height: 114px;
+    width: calc(100% - 280px);
+    margin: 0 40px 30px 240px !important;
     padding-left: 0 !important;
   }
 
-  #topbar .title{
-    max-width: calc(100% - 245px);
+  .withnicklist + .footer {
+    width: calc(100% - 420px);
+    margin: 0 180px 30px 240px !important;
+  }
+
+  .footer #sendMessage-input {
+    max-height: 114px;
   }
 
   #sendMessage-pre {
     padding: 7px 95px 7px 16px;
     max-height: 114px;
-    font-family: "Roboto Mono", Helvetica, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Heiti SC", "Heiti TC", sans-serif;
+    font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
   }
 
   #bufferlines {
-    padding-bottom: 94px;
+    margin-bottom: 94px;
+    height: calc(100% - 154px);
     bottom: 0px;
   }
 
   #bufferlines .bufferline {
-    background: rgba(33,33,33, 0.6);
-  }
-
-  #bufferlines tbody .buf-selfmsg:hover {
-    background-color: rgba(33,33,33,0.6);
+    background: 0 0;
   }
 
   #bufferlines .bufferline .prefix {
@@ -566,34 +833,20 @@ body {
   }
 
   .input-group #sendMessage:active, .input-group #sendMessage:hover, .input-group #sendMessage:focus {
-    box-shadow: 0 3px 20px rgba(0,0,0,0.23), 0 3px 20px rgba(0,0,0,0.16);
-    background: rgba(33,33,33, 0.9);
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
   }
 
   .input-group #sendMessage {
-    transition-property: background, box-shadow;
-    transition-duration: 0.2s;
     padding: 7px 95px 7px 16px;
-    background: rgba(33,33,33, 0.2);
-    font-family: "Roboto Mono", Helvetica, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Heiti SC", "Heiti TC", sans-serif;
+    font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
   }
 
   .input-group .input-group-btn {
     width: 80px;
   }
 
-}
-
-@media (min-width: 1400px) {
-
-  .footer {
-    width: calc(100% - 420px);
-    margin: 0 180px 30px 240px !important;
-  }
-
-  #topbar .title{
-    max-width: calc(100% - 305px);
-  }
 }
 
 /* WeeChat colors, foreground */
@@ -640,7 +893,7 @@ body {
     color: #fbb1f9;
 }
 .cwf-cyan {
-    color: #218693;
+    color: #67cece;
 }
 .cwf-lightcyan {
     color: #77dfd8;

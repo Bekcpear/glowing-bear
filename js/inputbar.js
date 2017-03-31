@@ -39,19 +39,26 @@ weechat.directive('inputBar', function() {
                 if ($scope.command != "") {
                     $scope.noinput = false;
 
-                    var cmd_length = 0;
-                    var cmd_array = $scope.command.match(/[-_.!~*'()a-z0-9]/gi);
-                    if (cmd_array) {
-                      cmd_length += cmd_array.length;
-                    }
-                    var cmd_ext_array = encodeURIComponent($scope.command).match(/%[a-f0-9]{2}/gi);
-                    if (cmd_ext_array) {
-                      cmd_length += cmd_ext_array.length;
-                    }
-                    if (cmd_length > 412) {
+                    if ($scope.command.match(/.+[\r\n]+.+/)) {
+                      document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (including line-feed or carriage return)";
                       document.getElementById("msgSegmentedNoti").style.display = "block";
                     } else {
-                      document.getElementById("msgSegmentedNoti").style.display = "none";
+
+                      var cmd_length = 0;
+                      var cmd_array = $scope.command.match(/[-_.!~*'()a-z0-9]/gi);
+                      if (cmd_array) {
+                        cmd_length += cmd_array.length;
+                      }
+                      var cmd_ext_array = encodeURIComponent($scope.command).match(/%[a-f0-9]{2}/gi);
+                      if (cmd_ext_array) {
+                        cmd_length += cmd_ext_array.length;
+                      }
+                      if (cmd_length > 412) {
+                        document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (size limit according to weechat default settings)";
+                        document.getElementById("msgSegmentedNoti").style.display = "block";
+                      } else {
+                        document.getElementById("msgSegmentedNoti").style.display = "none";
+                      }
                     }
                 } else {
                     $scope.noinput = true;
@@ -63,11 +70,12 @@ weechat.directive('inputBar', function() {
 
                 if (spreElem_height_px !== spreElem_height_px_last) {
                     if (utils.isMobileUi()) {
-                        var bufLinElemPB = parseInt(spreElem_height_px) + 20;
+                        var bufLinElemPB = parseInt(spreElem_height_px);
                     } else {
                         var bufLinElemPB = parseInt(spreElem_height_px) + 60;
                     }
-                    document.getElementById("bufferlines").style.paddingBottom = bufLinElemPB.toString() + "px";
+                    document.getElementById("bufferlines").style.marginBottom = bufLinElemPB.toString() + "px";
+                    document.getElementById("bufferlines").style.height = "calc(100% - " + bufLinElemPB.toString() + "px - 60px)";
                 }
 
                 if (isiOS) {
@@ -217,9 +225,11 @@ weechat.directive('inputBar', function() {
                     spreElem_height_px_last = "";
 
                     if (utils.isMobileUi()) {
-                      document.getElementById("bufferlines").style.paddingBottom = "54px";
+                      document.getElementById("bufferlines").style.marginBottom = "34px";
+                      document.getElementById("bufferlines").style.height = "calc(100% - 94px)";
                     } else {
-                      document.getElementById("bufferlines").style.paddingBottom = "94px";
+                      document.getElementById("bufferlines").style.marginBottom = "94px";
+                      document.getElementById("bufferlines").style.height = "calc(100% - 154px)";
                     }
 
                     $scope.noinput = true;
@@ -255,7 +265,7 @@ weechat.directive('inputBar', function() {
                 var quote_length = 0;
                 var quote_array = quoteURIencoded.match(/%f[a-f0-9%]{10}|%e[a-f0-9%]{7}|%[cd]{1}[a-f0-9%]{4}|%[0-7]{1}[a-f0-9%]{1}|[-_.!~*'()a-z0-9]/gi);
                 quote = "";
-                for (var i = 0; i < quote_array.length; ++i) {
+                for (var i = 0; quote_array && i < quote_array.length; ++i) {
                   if (quote_array[i].match(/^%f[a-f0-9%]{10}$/i)) {
                     quote_length += 4;
                   } else if (quote_array[i].match(/^%e[a-f0-9%]{7}$/i)) {
@@ -266,7 +276,7 @@ weechat.directive('inputBar', function() {
                     quote_length += 1;
                   }
                   if (quote_length > 50) {
-                    quote += " …";
+                    quote += "…";
                     break;
                   }
                   quote += quote_array[i];

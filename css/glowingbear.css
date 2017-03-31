@@ -708,7 +708,7 @@ img.emojione {
 /* */
 /* Mobile layout */
 /* */
-@media (max-width: 968px) {
+@media (max-width: 600px) {
 
     .mobile {
       display: inherit;

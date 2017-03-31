@@ -241,7 +241,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
           <a href="#" ng-click="toggleSidebar()">
             <img alt="brand" src="assets/img/favicon.png" title="Connected to {{ settings.host }}:{{ settings.port}}">
           </a>
-          <span class="badge" ng-show="unread > 0">{{unread}}</span>
+          <!--<span class="badge" ng-show="unread > 0">{{unread}}</span>-->
           <span class="badge danger" ng-show="notifications > 0">{{notifications}}</span>
 
           <button ng-if="debugMode" ng-click="countWatchers()">Count<br />Watchers</button>
@@ -250,15 +250,6 @@ npm run build-electron-{windows, darwin, linux}</pre>
         <div class="title" title="{{activeBuffer().rtitle}}">
           <span class="desktop" ng-repeat="part in activeBuffer().title" ng-class="::part.classes" ng-bind-html="::(part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky')"></span>
           <span class="mobile" ng-click="showModal('topicModal')" ng-class="{'active': activeBuffer().active, 'channel': activeBuffer().type === 'channel', 'channel_hash': activeBuffer().prefix === '#', 'channel_plus': activeBuffer().prefix === '+', 'channel_ampersand': activeBuffer().prefix === '&'}">{{ activeBuffer().trimmedName || activeBuffer().fullName }}</span>
-        </div>
-
-        <div class="actions pull-right vertical-line-left">
-          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
-            <i class="glyphicon glyphicon-cog"></i>
-          </a>
-          <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
-            <i class="glyphicon glyphicon-off"></i>
-          </a>
         </div>
       </div>
       <div id="sidebar" data-state="visible" ng-swipe-left="hideSidebar()" ng-swipe-disable-mouse class="vertical-line">
@@ -286,6 +277,14 @@ npm run build-electron-{windows, darwin, linux}</pre>
             </a>
           </li>
         </ul>
+        <div class="actions">
+          <a class="settings-toggle" ng-click="showModal('settingsModal')" title="Options menu" href="#">
+            Settings
+          </a>
+          <a ng-click="disconnect()" title="Disconnect from WeeChat" href="#">
+            Disconnect
+          </a>
+        </div>
       </div>
       <div id="nicklist" ng-if="showNicklist" ng-swipe-right="closeNick()" ng-swipe-disable-mouse class="vertical-line-left">
         <ul class="nicklistgroup list-unstyled" ng-repeat="group in nicklist">
@@ -306,12 +305,14 @@ npm run build-electron-{windows, darwin, linux}</pre>
           </tbody>
           <tbody ng-repeat="bufferline in bufferlines">
             <tr class="bufferline" ng-class="::bufferline.msgType">
-              <td class="time">
-                <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
-                  <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
-                </span>
-              </td>
-              <td class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline.prefix, bufferline.content)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></span></td><!--
+              <td class="msgfrom">
+                <div class="time">
+                  <span class="date" ng-class="::{'repeated-time': bufferline.shortTime==bufferlines[$index-1].shortTime}">
+                    <span class="cof-chat_time cob-chat_time coa-chat_time" ng-bind-html="::bufferline.formattedTime"></span>
+                  </span>
+                </div>
+                <div class="prefix"><span ng-class="::{'repeated-prefix': bufferline.prefixtext==bufferlines[$index-1].prefixtext}"><a ng-click="addMention(bufferline.prefix, bufferline.content)"><span class="hidden-bracket">&lt;</span><span ng-repeat="part in ::bufferline.prefix" ng-class="::part.classes" ng-bind="::part.text|prefixlimit:25"></span><span class="hidden-bracket">&gt;</span></a></span></div>
+              </td><!--
            --><td class="message"><!--
              --><div ng-repeat="metadata in ::bufferline.metadata" plugin data="::metadata"></div><!--
              --><span ng-repeat="part in ::bufferline.content" class="text" ng-class="::part.classes.concat(['line-' + part.$$hashKey.replace(':','_')])" ng-bind-html="::part.text | linky:'_blank':{rel:'noopener noreferrer'} | DOMfilter:'irclinky' | DOMfilter:'emojify':settings.enableJSEmoji | DOMfilter:'inlinecolour' | DOMfilter:'latexmath':('.line-' + part.$$hashKey.replace(':','_')):settings.enableMathjax"></span>
@@ -328,8 +329,6 @@ npm run build-electron-{windows, darwin, linux}</pre>
       </div>
       <div class="footer">
         <div id="sendMessage-input" input-bar input-id="sendMessage" command="command"></div>
-        <div id="msgSegmentedNoti">The message will be sent in segments. (according to weechat default settings)</div>
-        <pre id="sendMessage-pre"></pre>
       </div>
     </div>
     <div id="soundNotification"></div>
