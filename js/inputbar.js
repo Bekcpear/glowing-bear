@@ -14,12 +14,12 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'imgur', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'ptpb', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
                              connection, //XXX we should eliminate this dependency and use signals instead
-                             imgur,
+                             ptpb,
                              models,
                              IrcUtils,
                              settings,
@@ -36,14 +36,15 @@ weechat.directive('inputBar', function() {
             $scope.inputChanged = function() {
                 $scope.command = emojione.shortnameToUnicode($scope.command);
 
+                // judge if the message will be sent in segments
+                var cmd_msgSegmented = false;
                 if ($scope.command != "") {
                     $scope.noinput = false;
 
                     if ($scope.command.match(/.+[\r\n]+.+/)) {
                       document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (including line-feed or carriage return)";
-                      document.getElementById("msgSegmentedNoti").style.display = "block";
+                      cmd_msgSegmented = true;
                     } else {
-
                       var cmd_length = 0;
                       var cmd_array = $scope.command.match(/[-_.!~*'()a-z0-9]/gi);
                       if (cmd_array) {
@@ -55,14 +56,31 @@ weechat.directive('inputBar', function() {
                       }
                       if (cmd_length > 412) {
                         document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (size limit according to weechat default settings)";
-                        document.getElementById("msgSegmentedNoti").style.display = "block";
+                        cmd_msgSegmented = true;
                       } else {
                         document.getElementById("msgSegmentedNoti").style.display = "none";
                       }
                     }
+                    if ( cmd_msgSegmented ) {
+                      document.getElementById("msgSegmentedNoti").style.display = "block";
+                    }
+
                 } else {
                     $scope.noinput = true;
                     document.getElementById("msgSegmentedNoti").style.display = "none";
+                }
+
+                // judge if uploaded image url exists
+                if ( ! $scope.command.match(/fars.ee\/[-_.!~*'()a-z0-9]{4}\.[a-z]{3,4}/i) ) {
+                  document.getElementById("imgur-upload-uuid").style.display = "none";
+                  document.getElementById("imgur-upload-uuid").style.top     = "initial";
+                  document.getElementById("imgur-upload-uuid").style.bottom  = "initial";
+                } else if ( document.getElementById("imgur-upload-uuid").style.display === "block" && utils.isMobileUi() ) {
+                  if ( cmd_msgSegmented ) {
+                    document.getElementById("imgur-upload-uuid").style.bottom = "calc(100% + 20px)";
+                  } else {
+                    document.getElementById("imgur-upload-uuid").style.bottom = "100%";
+                  }
                 }
 
                 spreElem.textContent = $scope.command;
@@ -159,10 +177,23 @@ weechat.directive('inputBar', function() {
 
             $scope.uploadImage = function($event, files) {
                 // Send image url after upload
-                var sendImageUrl = function(imageUrl) {
+                var sendImageUrl = function(imageUrl, imageUuid) {
                     // Send image
                     if(imageUrl !== undefined && imageUrl !== '') {
                         $rootScope.insertAtCaret(String(imageUrl));
+                    }
+                    // Set UUID
+                    if ( imageUuid !== undefined && imageUuid !== '' ) {
+                        if ( utils.isMobileUi() ) {
+                            document.getElementById("imgur-upload-uuid").style.top    = "initial";
+                            document.getElementById("imgur-upload-uuid").style.bottom = "100%";
+                        } else {
+                            document.getElementById("imgur-upload-uuid").style.top    = "100%";
+                            document.getElementById("imgur-upload-uuid").style.bottom = "initial";
+                        }
+                        document.getElementById("imgur-upload-uuid").textContent = imageUuid;
+                        document.getElementById("imgur-upload-uuid-hist").textContent += "url: " + imageUrl + ", uuid: " + imageUuid + "\n";
+                        document.getElementById("imgur-upload-uuid").style.display = "block";
                     }
                 };
 
@@ -170,7 +201,7 @@ weechat.directive('inputBar', function() {
                     // Loop through files
                     for (var i = 0; i < files.length; i++) {
                         // Process image
-                        imgur.process(files[i], sendImageUrl);
+                        ptpb.process(files[i], sendImageUrl);
                     }
 
                 }
@@ -224,6 +255,12 @@ weechat.directive('inputBar', function() {
                     document.getElementById("sendMessage-pre").textContent = $scope.command;
                     spreElem_height_px_last = "";
 
+                    // reset imgur-upload-uuid
+                    document.getElementById("imgur-upload-uuid").style.display = "block";
+                    document.getElementById("imgur-upload-uuid").style.top     = "initial";
+                    document.getElementById("imgur-upload-uuid").style.bottom  = "initial";
+
+                    // reset inputbar
                     if (utils.isMobileUi()) {
                       document.getElementById("bufferlines").style.marginBottom = "34px";
                       document.getElementById("bufferlines").style.height = "calc(100% - 94px)";
@@ -255,10 +292,14 @@ weechat.directive('inputBar', function() {
                 var nick = prefix[prefix.length - 1].text;
 
                 var quote = "";
-                for (var i = 0; i < content.length; ++i) {
-                  if ( ! content[i].text.match(/^.{0,1}Re\s/)) {
-                    quote += content[i].text;
+                if (content.length > 1) {
+                  for (var i = 0; i < content.length; ++i) {
+                    if ( ! content[i].text.match(/^.{0,1}Re\s/)) {
+                      quote += content[i].text;
+                    }
                   }
+                } else {
+                  quote = content[0].text.replace(/^「Re[^」]+」/, "");
                 }
                 var quoteURIencoded = encodeURIComponent(quote);
 

@@ -1010,7 +1010,7 @@
                     }
                 } else if (tmp["tags_array"][0] === "irc_privmsg") {
                     tmp["msgType"] = ["privmsg", "normal"];
-                    if (tmp["tags_array"][2] && tmp["tags_array"][2] === "self_msg") {
+                    if ((tmp["tags_array"][2] && tmp["tags_array"][2] === "self_msg") || (tmp["tags_array"][1] && tmp["tags_array"][1] === "notify_none" && tmp["tags_array"][2] && tmp["tags_array"][2] === "no_highlight")) {
                         tmp["msgType"] = ["privmsg", "selfmsg"];
                     }
                     if (tmp["highlight"] && tmp["highlight"] === 1) {
