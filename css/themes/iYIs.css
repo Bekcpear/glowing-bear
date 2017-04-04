@@ -517,6 +517,8 @@ body {
   line-height: normal;
   background-color: #424242;
   width: auto;
+  position: relative;
+  z-index: 2;
 }
 
 #bufferlines tbody .buf-selfmsg {
@@ -724,7 +726,7 @@ body {
 }
 
 .glyphicon {
-  top: -2px !important;
+  top: -2px;
 }
 
 #sendMessage-pre {
@@ -745,6 +747,66 @@ body {
 .imgur-progress-bar {
   height: 3px;
   background: rgba(186, 233, 255, 0.6);
+}
+
+.jumpTo {
+  position: fixed;
+  right: 20px;
+  height: 36px;
+  width: 36px;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 10px 0 0 0;
+  border-radius: 50%;
+  color: #757575;
+  background-color: #272727;
+  text-align: center;
+  vertical-align: middle;
+  transition-property: color, background-color;
+  transition-duration: 10s;
+  z-index: 99;
+}
+
+#jumpToReadmarker::before {
+  content: "\e044";
+}
+#jumpToReadmarker {
+  top: 70px;
+  padding-right: 2px;
+  font-size: 15px;
+}
+
+#jumpToLastMention::before {
+  content: "\e095";
+}
+#jumpToLastMention {
+  top: calc(50% - 40px);
+}
+
+.jumpTo-mask {
+  position: fixed;
+  background-color: none;
+  right: 10px;
+  height: 56px;
+  width: 56px;
+  visibility: visible !important;
+  z-index: 1;
+}
+
+#jumpToReadmarker-mask {
+  top: 60px;
+}
+
+#jumpToLastMention-mask {
+  top: calc(50% - 50px);
+}
+
+#jumpToBottom::before {
+  content: "\e259";
+}
+#jumpToBottom {
+  top: calc(100% - 140px);
+  transition-duration: 0.3s !important;
 }
 
 
@@ -804,6 +866,10 @@ body {
     position: fixed;
     width: 120px;
     height: 34px;
+  }
+
+  #jumpToBottom {
+    top: calc(100% - 80px);
   }
 
 }

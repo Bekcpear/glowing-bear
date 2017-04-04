@@ -14,7 +14,7 @@ weechat.directive('inputBar', function() {
             command: '=command'
         },
 
-        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'ptpb', 'models', 'IrcUtils', 'settings', 'utils', function($rootScope,
+        controller: ['$rootScope', '$scope', '$element', '$log', 'connection', 'ptpb', 'models', 'IrcUtils', 'settings', 'utils', 'htmlHandler', function($rootScope,
                              $scope,
                              $element, //XXX do we need this? don't seem to be using it
                              $log,
@@ -23,90 +23,35 @@ weechat.directive('inputBar', function() {
                              models,
                              IrcUtils,
                              settings,
-                             utils) {
+                             utils,
+                             htmlHandler) {
 
             // Expose utils to be able to check if we're on a mobile UI
             $scope.utils = utils;
             $scope.noinput = true;
 
             var isiOS = utils.isiOS();
-            var spreElem = document.getElementById("sendMessage-pre");
-            var spreElem_height_px_last = "";
             // E.g. Turn :smile: into the unicode equivalent
-            $scope.inputChanged = function() {
-                $scope.command = emojione.shortnameToUnicode($scope.command);
+            $scope.inputChanged = function(normalInput) {
+
+                $rootScope.updateActiveTime();
+
+                if ( normalInput === undefined) {
+                    normalInput = true
+                }
+                if ( $scope.command !== undefined && $scope.command !== "" ) {
+                    $scope.command = emojione.shortnameToUnicode($scope.command);
+                }
 
                 // judge if the message will be sent in segments
-                var cmd_msgSegmented = false;
-                if ($scope.command != "") {
-                    $scope.noinput = false;
-
-                    if ($scope.command.match(/.+[\r\n]+.+/)) {
-                      document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (including line-feed or carriage return)";
-                      cmd_msgSegmented = true;
-                    } else {
-                      var cmd_length = 0;
-                      var cmd_array = $scope.command.match(/[-_.!~*'()a-z0-9]/gi);
-                      if (cmd_array) {
-                        cmd_length += cmd_array.length;
-                      }
-                      var cmd_ext_array = encodeURIComponent($scope.command).match(/%[a-f0-9]{2}/gi);
-                      if (cmd_ext_array) {
-                        cmd_length += cmd_ext_array.length;
-                      }
-                      if (cmd_length > 412) {
-                        document.getElementById("msgSegmentedNoti").textContent = "Message will be sent in segments. (size limit according to weechat default settings)";
-                        cmd_msgSegmented = true;
-                      } else {
-                        document.getElementById("msgSegmentedNoti").style.display = "none";
-                      }
-                    }
-                    if ( cmd_msgSegmented ) {
-                      document.getElementById("msgSegmentedNoti").style.display = "block";
-                    }
-
-                } else {
-                    $scope.noinput = true;
-                    document.getElementById("msgSegmentedNoti").style.display = "none";
-                }
+                var msgSegNotiRe = htmlHandler.msgSegNotify($scope.command, normalInput);
+                $scope.noinput = msgSegNotiRe[0];
 
                 // judge if uploaded image url exists
-                if ( ! $scope.command.match(/fars.ee\/[-_.!~*'()a-z0-9]{4}\.[a-z]{3,4}/i) ) {
-                  document.getElementById("imgur-upload-uuid").style.display = "none";
-                  document.getElementById("imgur-upload-uuid").style.top     = "initial";
-                  document.getElementById("imgur-upload-uuid").style.bottom  = "initial";
-                } else if ( document.getElementById("imgur-upload-uuid").style.display === "block" && utils.isMobileUi() ) {
-                  if ( cmd_msgSegmented ) {
-                    document.getElementById("imgur-upload-uuid").style.bottom = "calc(100% + 20px)";
-                  } else {
-                    document.getElementById("imgur-upload-uuid").style.bottom = "100%";
-                  }
-                }
+                htmlHandler.adjUuidSegBar(msgSegNotiRe[1], $scope.command);
 
-                spreElem.textContent = $scope.command;
-                var spreElem_height_px = window.getComputedStyle(spreElem,null).getPropertyValue("height");
-
-                if (spreElem_height_px !== spreElem_height_px_last) {
-                    if (utils.isMobileUi()) {
-                        var bufLinElemPB = parseInt(spreElem_height_px);
-                    } else {
-                        var bufLinElemPB = parseInt(spreElem_height_px) + 60;
-                    }
-                    document.getElementById("bufferlines").style.marginBottom = bufLinElemPB.toString() + "px";
-                    document.getElementById("bufferlines").style.height = "calc(100% - " + bufLinElemPB.toString() + "px - 60px)";
-                }
-
-                if (isiOS) {
-                    if (utils.isMobileUi()) {
-                      spreElem.style.paddingRight = "137px";
-                    } else {
-                      spreElem.style.paddingRight = "100px";
-                    }
-                    document.getElementById("sendMessage").style.height = spreElem_height_px;
-                    document.getElementById("sendMessage").style.width = window.getComputedStyle(spreElem,null).getPropertyValue("width");
-                    document.getElementById("sendMessage").style.minWidth = window.getComputedStyle(spreElem,null).getPropertyValue("width");
-                }
-                spreElem_height_px_last = spreElem_height_px;
+                // adjust inputbar height
+                htmlHandler.adjInpBar($scope.command, isiOS); 
             };
 
             /*
@@ -183,18 +128,9 @@ weechat.directive('inputBar', function() {
                         $rootScope.insertAtCaret(String(imageUrl));
                     }
                     // Set UUID
-                    if ( imageUuid !== undefined && imageUuid !== '' ) {
-                        if ( utils.isMobileUi() ) {
-                            document.getElementById("imgur-upload-uuid").style.top    = "initial";
-                            document.getElementById("imgur-upload-uuid").style.bottom = "100%";
-                        } else {
-                            document.getElementById("imgur-upload-uuid").style.top    = "100%";
-                            document.getElementById("imgur-upload-uuid").style.bottom = "initial";
-                        }
-                        document.getElementById("imgur-upload-uuid").textContent = imageUuid;
-                        document.getElementById("imgur-upload-uuid-hist").textContent += "url: " + imageUrl + ", uuid: " + imageUuid + "\n";
-                        document.getElementById("imgur-upload-uuid").style.display = "block";
-                    }
+                    htmlHandler.addImgUuid(imageUuid, imageUrl);
+
+                    $scope.inputChanged();
                 };
 
                 if(typeof files !== "undefined" && files.length > 0) {
@@ -252,29 +188,8 @@ weechat.directive('inputBar', function() {
 
                     // Empty the input after it's sent
                     $scope.command = '';
-                    document.getElementById("sendMessage-pre").textContent = $scope.command;
-                    spreElem_height_px_last = "";
-
-                    // reset imgur-upload-uuid
-                    document.getElementById("imgur-upload-uuid").style.display = "block";
-                    document.getElementById("imgur-upload-uuid").style.top     = "initial";
-                    document.getElementById("imgur-upload-uuid").style.bottom  = "initial";
-
-                    // reset inputbar
-                    if (utils.isMobileUi()) {
-                      document.getElementById("bufferlines").style.marginBottom = "34px";
-                      document.getElementById("bufferlines").style.height = "calc(100% - 94px)";
-                    } else {
-                      document.getElementById("bufferlines").style.marginBottom = "94px";
-                      document.getElementById("bufferlines").style.height = "calc(100% - 154px)";
-                    }
-
+                    htmlHandler.resetInput(false, isiOS);
                     $scope.noinput = true;
-                    document.getElementById("msgSegmentedNoti").style.display = "none";
-
-                    if (isiOS) {
-                        document.getElementById("sendMessage").style.height = "34px";
-                    }
 
                 }
 
@@ -541,6 +456,7 @@ weechat.directive('inputBar', function() {
                             inputNode.setSelectionRange($scope.command.length, $scope.command.length);
                         }
                     }, 0);
+                    $scope.inputChanged(false);
                     return true;
                 }
 
@@ -552,11 +468,12 @@ weechat.directive('inputBar', function() {
                     }
                     $scope.command = models.getActiveBuffer().getHistoryDown($scope.command);
                     // We don't need to set the cursor to the rightmost position here, the browser does that for us
+                    $scope.inputChanged(false);
                     return true;
                 }
 
-                // Enter to submit, shift-enter for newline
-                if (code == 13 && !$event.shiftKey && !utils.isMobileUi() && document.activeElement === inputNode) {
+                // [Ctrl + ]Enter to submit, shift-enter for newline
+                if (code == 13 && !$event.shiftKey && document.activeElement === inputNode && ( (!$event.ctrlKey && !settings.ctrlentertosend) || ($event.ctrlKey && settings.ctrlentertosend) )) {
                     $event.preventDefault();
                     $scope.sendMessage();
                     return true;
@@ -567,7 +484,7 @@ weechat.directive('inputBar', function() {
                 var i;
 
                 // Page up -> scroll up
-                if ($event.type === "keydown" && code === 33 && document.activeElement === inputNode && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
+                if ($event.type === "keydown" && code === 33 && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
                     if (bufferlines.scrollTop === 0) {
                         if (!$rootScope.loadingLines) {
                             $scope.$parent.fetchMoreLines();
@@ -585,7 +502,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Page down -> scroll down
-                if ($event.type === "keydown" && code === 34 && document.activeElement === inputNode && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
+                if ($event.type === "keydown" && code === 34 && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
                     lines = bufferlines.querySelectorAll("tr");
                     for (i = 0; i < lines.length; i++) {
                         if ((lines[i].offsetTop-bufferlines.scrollTop)>bufferlines.clientHeight/2) {
@@ -637,6 +554,29 @@ weechat.directive('inputBar', function() {
                 if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey) {
                     $rootScope.showQuickKeys = true;
                 }
+            };
+
+            $rootScope.jumpTo = function(position) {
+
+              var bufferlines = document.getElementById("bufferlines");
+              var lines = bufferlines.querySelectorAll("tr");
+
+              // 2 to mention, 1 to readmaker, 0 to bottom
+              switch (position) {
+                case 2:
+                  $rootScope.scrollWithBuffer(false, true, true);
+                  htmlHandler.toggleJumpTo("toMention", 4, true);
+                  break;
+                case 1:
+                  $rootScope.scrollWithBuffer(true, true);
+                  htmlHandler.toggleJumpTo("toReadmarker", 4, true);
+                  break;
+                case 0:
+                  lines[lines.length - 1].scrollIntoView(true);
+                  break;
+                default:
+              }
+
             };
 
             $rootScope.handleKeyRelease = function($event) {

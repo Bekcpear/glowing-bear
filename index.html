@@ -39,6 +39,7 @@
     <script type="text/javascript" src="js/file-change.js"></script>
     <script type="text/javascript" src="js/imgur-drop-directive.js"></script>
     <script type="text/javascript" src="js/whenscrolled-directive.js"></script>
+    <script type="text/javascript" src="js/html-handler.js"></script>
     <script type="text/javascript" src="js/inputbar.js"></script>
     <script type="text/javascript" src="js/plugin-directive.js"></script>
     <script type="text/javascript" src="js/websockets.js"></script>
@@ -49,7 +50,7 @@
     <script type="text/javascript" src="js/ptpb.js"></script>
     <script type="text/javascript" src="3rdparty/favico-0.3.10.min.js"></script>
   </head>
-  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" lang="en-US">
+  <body ng-controller="WeechatCtrl" ng-keydown="handleKeyPress($event)" ng-keyup="handleKeyRelease($event)"  ng-keypress="handleKeyPress($event)" ng-class="{'no-overflow': connected}" ng-init="init()" ng-mousemove="updateActiveTime()" lang="en-US">
     <div class="alert alert-danger upload-error" ng-show="uploadError">
       <p><strong>Upload error:</strong> Image upload failed.</p>
     </div>
@@ -257,7 +258,7 @@ npm run build-electron-{windows, darwin, linux}</pre>
         <ul class="nav nav-pills nav-stacked" ng-class="{'indented': (predicate === 'serverSortKey'), 'showquickkeys': showQuickKeys}">
           <li class="bufferfilter">
             <form role="form">
-              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" placeholder="Search" autocomplete="off">
+              <input class="form-control favorite-font" type="text" id="bufferFilter" ng-model="search" ng-keydown="handleSearchBoxKey($event)" ng-focus="updateActiveTime()" placeholder="Search" autocomplete="off">
             </form>
           </li>
           <li class="buffer" ng-class="{'active': buffer.active,
@@ -331,6 +332,11 @@ npm run build-electron-{windows, darwin, linux}</pre>
       <div class="footer">
         <div id="sendMessage-input" input-bar input-id="sendMessage" command="command"></div>
       </div>
+      <div id="jumpToReadmarker" class="jumpTo glyphicon" ng-click="jumpTo(1)" title="Jump to readmarker" style="display: none;"></div>
+      <div id="jumpToReadmarker-mask" class="jumpTo-mask" ng-mouseenter="m2toggleJumpTo(1, 1)" ng-mouseleave="m2toggleJumpTo(1, 0)" style="visibility: hidden;"></div>
+      <div id="jumpToLastMention" class="jumpTo glyphicon" ng-click="jumpTo(2)" title="Jump to last mention" style="display: none;"></div>
+      <div id="jumpToLastMention-mask" class="jumpTo-mask" ng-mouseenter="m2toggleJumpTo(0, 1)" ng-mouseleave="m2toggleJumpTo(0, 0)" style="visibility: hidden;"></div>
+      <div id="jumpToBottom" class="jumpTo glyphicon" ng-click="jumpTo(0)" title="Jump to bottom" style="display: none;"></div>
     </div>
     <div id="soundNotification"></div>
     <div id="reconnect" class="alert alert-danger" ng-click="reconnect()" ng-show="reconnecting">
@@ -387,6 +393,27 @@ npm run build-electron-{windows, darwin, linux}</pre>
                 </form>
               </li>
 
+              <li class="standard-labels">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="jumpTo" class="col-sm-3 control-label make-thinner">jumpTo buttons</label>
+                    <div class="col-sm-7">
+                      <select id="jumpTo" class="form-control" ng-model="settings.howToShowJumpTo" ng-options="jumpTo.name for jumpTo in jumpToOptions track by jumpTo.id"></select>
+                    </div>
+                  </div>
+                </form>
+              </li>
+
+              <li>
+                <form class="form-inline" role="form">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="settings.ctrlentertosend">
+                      Ctrl + Enter to send message
+                    </label>
+                  </div>
+                </form>
+              </li>
               <li>
                 <form class="form-inline" role="form">
                   <div class="checkbox">

@@ -12,8 +12,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings', 'htmlHandler',
+    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings, htmlHandler) {
 
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
@@ -22,6 +22,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $scope.command = '';
     $scope.themes = ['iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.jumpToOptions = [
+      {id: 1, name: 'default'},
+      {id: 2, name: 'always visiable if necessary'},
+      {id: 3, name: 'always hiding (exclude jumpToBottom)'}
+    ];
 
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
@@ -32,6 +37,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'ssl': (window.location.protocol === "https:"),
         'savepassword': false,
         'autoconnect': false,
+        'howToShowJumpTo': {id: 1, name: 'default'},
+        'ctrlentertosend': false,
         'nonicklist': utils.isMobileUi(),
         'noembed': true,
         'onlyUnread': false,
@@ -319,6 +326,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.hideSidebar = function() {
+
+        $rootScope.updateActiveTime();
+
         if (utils.isMobileUi()) {
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
@@ -539,18 +549,25 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $rootScope.updateBufferBottom = function(bottom) {
-            var eob = document.getElementById("end-of-buffer");
-            var bl = document.getElementById('bufferlines');
-            if (bottom) {
-                eob.scrollIntoView();
-            }
-            $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+        var eob = document.getElementById("end-of-buffer");
+        var bl = document.getElementById('bufferlines');
+        if (bottom) {
+            eob.scrollIntoView();
+            $rootScope.updateJumpToButtons("toBottom");
+        } else {
+            $rootScope.updateJumpToButtons();
+        }
+        $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
     };
-    $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines) {
+    $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines, scrollToMention) {
         // First, get scrolling status *before* modification
         // This is required to determine where we were in the buffer pre-change
         var bl = document.getElementById('bufferlines');
         var sVal = bl.scrollHeight - bl.clientHeight;
+
+        var isAt = [false, false];
+        // isAt[0] for mention
+        // isAt[1] for readmarker
 
         var scroll = function() {
             var sTop = bl.scrollTop;
@@ -559,9 +576,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // the exact spot. This fixes a bug in some browsers
             if (((scrollToReadmarker || moreLines) && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
                 var readmarker = document.querySelector(".readmarker");
+                var mention    = document.querySelectorAll(".buf-highlight");
                 if (scrollToReadmarker && readmarker) {
                     // Switching channels, scroll to read marker
-                    bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
+                    if ( ! isAt[1] ) {
+                      bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
+                      isAt[1] = true;
+                    }
+                } else if (scrollToMention && mention && mention.length != 0) {
+                    if ( ! isAt[0] ) {
+                      mention = mention[mention.length - 1];
+                      bl.scrollTop = mention.offsetTop - (bl.clientHeight - mention.scrollHeight) / 2;
+                      isAt[0] = true;
+                    }
                 } else if (moreLines) {
                     // We fetched more lines but the read marker is still out of view
                     // Keep the scroll position constant
@@ -677,12 +704,19 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         if (!ab) {
             return false;
         }
-        // Check if option no nicklist is set
-        if (settings.nonicklist) {
-            return false;
-        }
         // Check if nicklist is empty
         if (ab.isNicklistEmpty()) {
+            // Toggle jumpTo button
+            $rootScope.isChatBuffer = false;
+            $rootScope.updateJumpToButtons("init");
+            return false;
+        } else {
+            // Toggle jumpTo button
+            $rootScope.isChatBuffer = true;
+            $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+        }
+        // Check if option no nicklist is set
+        if (settings.nonicklist) {
             return false;
         }
         return true;
@@ -729,6 +763,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.handleSearchBoxKey = function($event) {
+
+        $rootScope.updateActiveTime(); 
+
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
 
@@ -819,6 +856,167 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             $scope.connectbuttonicon = 'glyphicon-chevron-right';
             connection.connect(host, port, password, ssl);
         }
+    };
+
+    var do_getJumpToBtnEle = function(btn) {
+      /* if btn is integer
+       *  0 --> toMention
+       *  1 --> toReadmarker
+       *
+       * return [btnElement, btnName, correspondingElementName]
+       * */
+      if (Number.isInteger(btn)) {
+        if ( btn === 0) return [document.getElementById("jumpToLastMention"), "toMention", "lastmention"];
+        else if ( btn === 1 ) return [document.getElementById("jumpToReadmarker"), "toReadmarker", "readmarker"];
+      } else {
+        if ( btn === "toMention" || btn === "toLastMention" ) return [document.getElementById("jumpToLastMention"), "toMention", "lastmention"];
+        else if ( btn === "toReadmarker" ) return [document.getElementById("jumpToReadmarker"), "toReadmarker", "readmarker"];
+      }
+      return [undefined, false];
+    };
+
+    var is_outOfScreen = function(ele) {
+
+      var bl = document.getElementById('bufferlines');
+
+      if ( ele === "readmarker" ) {
+        ele = document.querySelector(".readmarker");
+      } else if ( ele === "lastmention" ) {
+        ele = document.querySelectorAll(".buf-highlight");
+      }
+
+      if ( !ele ) return true;
+
+      if ( ele.length !== undefined ) {
+        if ( ele.length > 0 ) {
+          ele = ele[ele.length - 1];
+        } else {
+          return true;
+        }
+      }
+
+      if ( ele.offsetTop >= bl.scrollTop && ele.offsetTop <= (bl.scrollTop + bl.clientHeight) ) {
+        return false;
+      }
+      if ( ele.offsetTop < (bl.scrollTop - bl.clientHeight / 2) || ele.offsetTop > (bl.scrollTop + bl.clientHeight * 1.5) ) {
+        return true;
+      }
+
+      return undefined;
+    };
+
+
+    $rootScope.updateJumpToButtons = function(action, stat, update) {
+
+        // init stage is just for toMention and toReadmarker
+        if ( action === "init" ) {
+            if ( ! $rootScope.isChatBuffer ) {
+                htmlHandler.toggleJumpTo(false, 3);
+                return true;
+            }
+            if ( ! Number.isInteger(stat) || stat < 1 )  stat = 1;
+            htmlHandler.toggleJumpTo(false, stat);
+            if ( ! update ) return true;
+        }
+
+        if ( action === "off" ) {
+            htmlHandler.toggleJumpTo(false, 3);
+        }
+
+        var jt_toBottom = function() {
+            htmlHandler.toggleJumpTo("toBottom", 0);
+            document.getElementById('sendMessage').focus();
+        };
+
+        if ( action === "toBottom" ) {
+            jt_toBottom();
+            return true;
+        }
+
+        var eob = document.getElementById("end-of-buffer");
+        var bl = document.getElementById('bufferlines');
+
+        // toggle jumpToBottom
+        if ( (eob.offsetTop - bl.scrollTop) > 1.5 * bl.clientHeight ) {
+            htmlHandler.toggleJumpTo("toBottom", 1);
+        } else {
+            jt_toBottom();
+        }
+
+        if ( $rootScope.isChatBuffer ) {
+
+            var toReadmarker = do_getJumpToBtnEle(1)[0];
+            var toMention = do_getJumpToBtnEle(0)[0];
+
+            if (is_outOfScreen("readmarker") !== undefined
+                && !is_outOfScreen("readmarker")
+                && (
+                    toReadmarker.style.color !== "transparent"
+                    || action === "init"
+                   )) {
+                htmlHandler.toggleJumpTo("toReadmarker", 5, false, true, false);
+            }
+            if (is_outOfScreen("readmarker") !== undefined
+                && is_outOfScreen("readmarker")
+                && (
+                    toReadmarker.style.color === "transparent"
+                    || action === "init"
+                   )) {
+                htmlHandler.toggleJumpTo("toReadmarker", 4, true, true, false, 0, 0.71);
+            }
+
+            if (is_outOfScreen("lastmention") !== undefined
+                && !is_outOfScreen("lastmention")
+                && (
+                    toMention.style.color !== "transparent"
+                    || action === "init"
+                   )) {
+                htmlHandler.toggleJumpTo("toMention", 5, false, true, false);
+            }
+            if (is_outOfScreen("lastmention") !== undefined
+                && is_outOfScreen("lastmention")
+                && (
+                    toMention.style.color === "transparent"
+                    || action === "init"
+                   )) {
+                htmlHandler.toggleJumpTo("toMention", 4, true, true, false, 0, 0.71);
+            }
+        }
+    };
+
+    var do_initAndRefreshJumpTo = function() {
+      if ($rootScope.isChatBuffer) {
+        $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id, true);
+      }
+    }
+
+    settings.addCallback('howToShowJumpTo', function() {
+      do_initAndRefreshJumpTo();
+    });
+
+    $rootScope.updateActiveTime = function() {
+      if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
+        do_initAndRefreshJumpTo();
+      }
+      $rootScope.lastActiveTime = Date.now();
+    };
+
+    $rootScope.m2toggleJumpTo = function(btn, mouseenter) {
+      if ( settings.howToShowJumpTo.id !== 1 ) return;
+      if ( mouseenter === 1 ) {
+        if ($scope.m2showJumpToBtnTimers === undefined) $scope.m2showJumpToBtnTimers = [];
+        $scope.m2showJumpToBtnTimers[btn] = $timeout(function(){
+          var eleArr = do_getJumpToBtnEle(btn);
+          if (is_outOfScreen(eleArr[2]) !== undefined
+              && is_outOfScreen(eleArr[2])
+              && eleArr[0].style.color === "transparent") htmlHandler.toggleJumpTo(eleArr[1], 4, true, true, false);
+          $scope.m2showJumpToBtnTimers[btn] = undefined;
+        }, 1500);
+      } else {
+        if ( $scope.m2showJumpToBtnTimers !== undefined && $scope.m2showJumpToBtnTimers[btn] !== undefined ) {
+          $timeout.cancel($scope.m2showJumpToBtnTimers[btn]);
+        }
+      }
     };
 
 }]);
