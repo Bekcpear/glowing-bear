@@ -210,11 +210,21 @@ weechat.directive('inputBar', function() {
                 if (content.length > 1) {
                   for (var i = 0; i < content.length; ++i) {
                     if ( ! content[i].text.match(/^.{0,1}Re\s/)) {
-                      quote += content[i].text;
+                      if ( content[i].text.match(/^\[$/)
+                      && content[i+1] && content[i+1].text.match(/^Q0|Q1|T$/)
+                      && content[i+2] && content[i+2].text.match(/^\s-\s$/)
+                      && content[i+3] && content[i+3].text
+                      && content[i+4] && content[i+4].text.match(/^\]/) ) {
+                        nick = content[i+3].text.replace(/^User:/, "");
+                        quote += content[i+4].text.replace(/^\]\s*/, "");
+                        i = i+4;
+                      } else {
+                        quote += content[i].text;
+                      }
                     }
                   }
                 } else {
-                  quote = content[0].text.replace(/^「Re[^」]+」/, "");
+                  quote = content[0].text.replace(/^Re\s[^:\\\/'()『』「」]{1,20}[^:\\\/'()『』「」\s]{1}:\s?[「『]{1}[^」』]+[」』]{1}\s*|^[^:\\\/'()]{1,20}[^:\\\/'()\s]{1}:\s+/, "");
                 }
                 var quoteURIencoded = encodeURIComponent(quote);
 
@@ -231,7 +241,7 @@ weechat.directive('inputBar', function() {
                   } else if (quote_array[i].match(/^%[0-7]{1}[a-f0-9%]{1}|[-_.!~*'()a-z0-9]$/i)) {
                     quote_length += 1;
                   }
-                  if (quote_length > 50) {
+                  if (quote_length > 30) {
                     quote += "…";
                     break;
                   }
@@ -270,13 +280,19 @@ weechat.directive('inputBar', function() {
                 }
                 // Add highlight to nicklist
                 if (addColon) {
+                  /*
                     var nickMatch = quote.substring(nick.length + 2 , -1).match(/^[^:]+:\s/);
                     if (nickMatch) {
                         quote = nickMatch[0] === nick + ": " ? quote : nick + ": " + quote;
                     } else {
                         quote = nick + ": " + quote;
                     }
-                    newValue = '「Re ' + quote + " 」 ";
+                  */
+                    if (quote === "") {
+                        newValue = 'Re ' + nick + ": ";
+                    } else {
+                        newValue = 'Re ' + nick + ":『 " + quote + " 』 ";
+                    }
                 }
                 $scope.command = newValue;
                 $scope.getInputNode().focus();

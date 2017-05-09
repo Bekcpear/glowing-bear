@@ -219,7 +219,7 @@ body {
   float: left;
   width: calc(100% - 320px);
   text-align: center;
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
 }
 
@@ -835,6 +835,10 @@ body {
     margin: 0;
     text-align: left;
     padding-bottom: 50px;
+  }
+
+  .content[sidebar-state=visible] #nicklist {
+    display: none;
   }
 
   #bufferlines {

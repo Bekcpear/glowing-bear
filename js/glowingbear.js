@@ -898,7 +898,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
       if ( ele.offsetTop >= bl.scrollTop && ele.offsetTop <= (bl.scrollTop + bl.clientHeight) ) {
         return false;
       }
-      if ( ele.offsetTop < (bl.scrollTop - bl.clientHeight / 2) || ele.offsetTop > (bl.scrollTop + bl.clientHeight * 1.5) ) {
+      if ( ele.offsetTop < bl.scrollTop || ele.offsetTop > (bl.scrollTop + bl.clientHeight) ) {
         return true;
       }
 
@@ -925,7 +925,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
         var jt_toBottom = function() {
             htmlHandler.toggleJumpTo("toBottom", 0);
-            document.getElementById('sendMessage').focus();
+            $timeout(function(){                                                                                             
+                if ( window.getComputedStyle(document.getElementById("sidebar"),null).getPropertyValue("transform") !== "matrix(1, 0, 0, 1, 0, 0)" ) {
+                  document.getElementById('sendMessage').focus();
+                }
+            }, 200);
         };
 
         if ( action === "toBottom" ) {
@@ -937,7 +941,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         var bl = document.getElementById('bufferlines');
 
         // toggle jumpToBottom
-        if ( (eob.offsetTop - bl.scrollTop) > 1.5 * bl.clientHeight ) {
+        if ( (eob.offsetTop - bl.scrollTop) > 1.2 * bl.clientHeight ) {
             htmlHandler.toggleJumpTo("toBottom", 1);
         } else {
             jt_toBottom();
