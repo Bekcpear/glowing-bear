@@ -26,15 +26,17 @@ You can run Glowing Bear in many ways:
 
 ## Screenshots
 
-Running as Chrome application in a separate window on Windows and as Android app:
+**iYI's version**
 
-iYI's version:
+Running in Chromium browser:
 
 ![Glowing bear screenshot iYIs version](https://p.ume.ink/i/17/7b6021f07d6b78c895abd516f5ffe5024d8a81.png)
 
 ![Glowing bear screenshot iYIs version 1](https://p.ume.ink/i/f6/2e7f21c2c41fdf8ea83340b0149ce58ace330f.png)
 
-Official version:
+**Official version**
+
+Running as Chrome application in a separate window on Windows and as Android app:
 
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
