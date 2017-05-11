@@ -28,6 +28,14 @@ You can run Glowing Bear in many ways:
 
 Running as Chrome application in a separate window on Windows and as Android app:
 
+iYI's version:
+
+![Glowing bear screenshot iYIs version](https://p.ume.ink/i/17/7b6021f07d6b78c895abd516f5ffe5024d8a81.png)
+
+![Glowing bear screenshot iYIs version 1](https://p.ume.ink/i/f6/2e7f21c2c41fdf8ea83340b0149ce58ace330f.png)
+
+Official version:
+
 ![Glowing bear screenshot](https://4z2.de/glowingbear.png)
 
 Are you good with design? We'd love your help!
@@ -52,7 +60,7 @@ Getting started with the development of Glowing Bear is really simple, partly be
 
 Here's a simple example using the python simple web server:
 ```bash
-git clone https://github.com/glowing-bear/glowing-bear
+git clone https://github.com/Bekcpear/glowing-bear
 cd glowing-bear
 # python 2.*
 python -m SimpleHTTPServer
