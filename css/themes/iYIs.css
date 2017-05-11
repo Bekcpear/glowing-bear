@@ -7,13 +7,13 @@
   outline: none !important;
 }
 
-::-webkit-scrollbar-track, #nicklist::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   background: 0 0;
 }
 
-::-webkit-scrollbar, #nicklist::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 10px;
   background: 0 0;
 }
@@ -24,7 +24,7 @@
 }
 */
 
-::-webkit-scrollbar-thumb, #nicklist::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   background: #424242;
@@ -334,6 +334,11 @@ body {
   margin-right: 145px !important;
 }
 
+#bufferlines > table {
+  display: block;
+  max-width: 100%;
+}
+
 #bufferlines tbody {
   display: block;
   overflow: hidden;
@@ -375,6 +380,20 @@ body {
 #bufferlines tbody .bufferline .message .embed {
   display: inline-block !important;
   margin: 0 !important;
+  max-width: 100%;
+}
+
+#bufferlines tbody .bufferline td .embed td {
+  display: table-cell;
+  float: initial;
+}
+
+.embed ::-webkit-scrollbar-thumb {
+  background: #E0E0E0;
+}
+
+.embed ::selection {
+  background-color: #81D4FA;
 }
 
 #bufferlines tbody .bufferline .msgfrom {
@@ -517,6 +536,7 @@ body {
   line-height: normal;
   background-color: #424242;
   width: auto;
+  max-width: 100%;
   position: relative;
   z-index: 2;
 }

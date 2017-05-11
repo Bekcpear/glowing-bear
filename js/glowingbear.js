@@ -19,8 +19,8 @@ weechat.config(['$compileProvider', function ($compileProvider) {
     }
 }]);
 
-weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings', 'htmlHandler',
-    function ($rootScope, $scope, $store, $timeout, $log, models, bufferResume, connection, notifications, utils, settings, htmlHandler) {
+weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', '$timeout', '$log', 'models', 'bufferResume', 'connection', 'notifications', 'utils', 'settings', 'htmlHandler',
+    function ($rootScope, $scope, $store, $window, $timeout, $log, models, bufferResume, connection, notifications, utils, settings, htmlHandler) {
 
     window.openBuffer = function(channel) {
         $scope.openBuffer(channel);
@@ -342,8 +342,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
 
     $rootScope.hideSidebar = function() {
 
-        $rootScope.updateActiveTime();
-
         if (utils.isMobileUi()) {
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
@@ -601,7 +599,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
             // Give the check 3 pixels of slack so you don't have to hit
             // the exact spot. This fixes a bug in some browsers
             if (((scrollToReadmarker || moreLines) && sTop < sVal) || (Math.abs(sTop - sVal) < 3)) {
-                var readmarker = document.querySelector(".readmarker");
+                var readmarker = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
                 var mention    = document.querySelectorAll(".buf-highlight");
                 if (scrollToReadmarker && readmarker) {
                     // Switching channels, scroll to read marker
@@ -789,8 +787,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
     };
 
     $scope.handleSearchBoxKey = function($event) {
-
-        $rootScope.updateActiveTime(); 
 
         // Support different browser quirks
         var code = $event.keyCode ? $event.keyCode : $event.charCode;
@@ -1027,11 +1023,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
       do_initAndRefreshJumpTo();
     });
 
-    $rootScope.updateActiveTime = function() {
+    $window.onfocus = function() {
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
-        do_initAndRefreshJumpTo();
+          do_initAndRefreshJumpTo();
       }
+    };
+
+    $window.onblur = function() {
       $rootScope.lastActiveTime = Date.now();
+      if ($rootScope.bufferBottom) {
+        htmlHandler.refreshReadmarker();
+      }
     };
 
     $rootScope.m2toggleJumpTo = function(btn, mouseenter) {

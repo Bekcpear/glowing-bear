@@ -34,8 +34,6 @@ weechat.directive('inputBar', function() {
             // E.g. Turn :smile: into the unicode equivalent
             $scope.inputChanged = function(normalInput) {
 
-                $rootScope.updateActiveTime();
-
                 if ( normalInput === undefined) {
                     normalInput = true
                 }
@@ -507,10 +505,10 @@ weechat.directive('inputBar', function() {
                         }
                         return true;
                     }
-                    lines = bufferlines.querySelectorAll("tr");
+                    lines = bufferlines.querySelectorAll(".bufferline");
                     for (i = lines.length - 1; i >= 0; i--) {
                         if ((lines[i].offsetTop-bufferlines.scrollTop)<bufferlines.clientHeight/2) {
-                            lines[i].scrollIntoView(false);
+                            lines[i - 1].scrollIntoView(false);
                             break;
                         }
                     }
@@ -519,7 +517,7 @@ weechat.directive('inputBar', function() {
 
                 // Page down -> scroll down
                 if ($event.type === "keydown" && code === 34 && !$event.ctrlKey && !$event.altKey && !$event.shiftKey) {
-                    lines = bufferlines.querySelectorAll("tr");
+                    lines = bufferlines.querySelectorAll(".bufferline");
                     for (i = 0; i < lines.length; i++) {
                         if ((lines[i].offsetTop-bufferlines.scrollTop)>bufferlines.clientHeight/2) {
                             lines[i].scrollIntoView(true);

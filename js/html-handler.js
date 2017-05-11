@@ -470,13 +470,44 @@ weechat.factory('htmlHandler', ['$timeout', 'utils', function($timeout, utils) {
 
   };
 
+  var refreshReadmarker = function() {
+
+    var readmarker = document.getElementsByClassName('readmarker')[0];
+
+    if ( readmarker !== undefined ) {
+      readmarker.parentNode.removeChild(readmarker);
+    }
+
+    var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByTagName('tbody')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByTagName('tbody').length - 1];
+    lasttbody.removeChild(lasttbody.getElementsByClassName('fclear')[0]);
+
+    var rdmTr = document.createElement('tr');
+    rdmTr.setAttribute("class", "readmarker");
+    rdmTr.setAttribute("ng-if", "activeBuffer().lastSeen==$index");
+    var rdmTd = document.createElement('td');
+    rdmTd.setAttribute("colspan", "3");
+    var rdmHr = document.createElement("hr");
+    rdmHr.setAttribute("id", "readmarker");
+
+    rdmTd.appendChild(rdmHr);
+    rdmTr.appendChild(rdmTd);
+
+    var fclear = document.createElement("tr");
+    fclear.setAttribute("class", "fclear");
+
+    lasttbody.appendChild(rdmTr);
+    lasttbody.appendChild(fclear);
+
+  };
+
   return {
     resetInput: resetInput,
     msgSegNotify: msgSegNotify,
     adjUuidSegBar: adjUuidSegBar,
     addImgUuid: addImgUuid,
     adjInpBar: adjInpBar,
-    toggleJumpTo: toggleJumpTo
+    toggleJumpTo: toggleJumpTo,
+    refreshReadmarker: refreshReadmarker
   };
 
 }]);
