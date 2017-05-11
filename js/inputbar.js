@@ -332,7 +332,7 @@ weechat.directive('inputBar', function() {
                 $scope.iterCandidate = null;
 
                 // Left Alt+[0-9] -> jump to buffer
-                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58)) {
+                if ($event.altKey && !$event.ctrlKey && (code > 47 && code < 58) && settings.enableQuickKeys) {
                     if (code === 48) {
                         code = 58;
                     }
@@ -554,7 +554,7 @@ weechat.directive('inputBar', function() {
                     // Ctrl-w
                     } else if (code == 87) {
                         var trimmedValue = $scope.command.slice(0, caretPos);
-                        var lastSpace = trimmedValue.lastIndexOf(' ') + 1;
+                        var lastSpace = trimmedValue.replace(/\s+$/, '').lastIndexOf(' ') + 1;
                         $scope.command = $scope.command.slice(0, lastSpace) + $scope.command.slice(caretPos, $scope.command.length);
                         setTimeout(function() {
                             inputNode.setSelectionRange(lastSpace, lastSpace);
@@ -567,7 +567,7 @@ weechat.directive('inputBar', function() {
                 }
 
                 // Alt key down -> display quick key legend
-                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey) {
+                if ($event.type === "keydown" && code === 18 && !$event.ctrlKey && !$event.shiftKey && settings.enableQuickKeys) {
                     $rootScope.showQuickKeys = true;
                 }
             };

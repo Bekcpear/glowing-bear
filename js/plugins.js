@@ -197,9 +197,9 @@ plugins.factory('userPlugins', function() {
         addMatch(message.match(/spotify:track:[a-zA-Z-0-9]{22}/g));
         addMatch(message.match(/spotify:artist:[a-zA-Z-0-9]{22}/g));
         addMatch(message.match(/spotify:user:\w+:playlist:[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
-        addMatch(message.match(/open\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/track\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/artist\/[a-zA-Z-0-9]{22}/g));
+        addMatch(message.match(/(open|play)\.spotify\.com\/user\/\w+\/playlist\/[a-zA-Z-0-9]{22}/g));
         return content;
     });
 
@@ -281,8 +281,8 @@ plugins.factory('userPlugins', function() {
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
             } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/http:/, "https:");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
@@ -340,16 +340,29 @@ plugins.factory('userPlugins', function() {
     var videoPlugin = new UrlPlugin('video', function(url) {
         if (url.match(/\.(3gp|avi|flv|gifv|mkv|mp4|ogv|webm|wmv)\b/i)) {
             if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
-                // remove protocol specification to load over https if used by g-b
-                url = url.replace(/\.(gifv)\b/i, ".webm");
+                // imgur: always use https. avoids mixed content warnings
+                url = url.replace(/^http:/, "https:");
             }
             return function() {
-                var element = this.getElement();
+                var element = this.getElement(), src;
                 var velement = angular.element('<video autoplay loop muted></video>')
                                      .addClass('embed')
-                                     .attr('width', '560')
-                                     .append(angular.element('<source></source>')
-                                                    .attr('src', url));
+                                     .attr('width', '560');
+                // imgur doesn't always have webm for gifv so add sources for webm and mp4
+                if (url.match(/^https:\/\/(i\.)?imgur\.com\/.*\.gifv/i)) {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".webm"))
+                                 .attr('type', 'video/webm');
+                    velement.append(src);
+                    src = angular.element('<source></source>')
+                                 .attr('src', url.replace(/\.gifv\b/i, ".mp4"))
+                                 .attr('type', 'video/mp4');
+                    velement.append(src);
+                } else {
+                    src = angular.element('<source></source>')
+                                 .attr('src', url);
+                    velement.append(src);
+                }
                 element.innerHTML = velement.prop('outerHTML');
             };
         }
@@ -539,8 +552,25 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    /*
+     * Streamable Embedded Player
+     */
+    var streamablePlugin = new UrlPlugin('Streamable video', function(url) {
+        var regexp = /^https?:\/\/streamable\.com\/s?\/?(.+)/,
+            match = url.match(regexp);
+        if (match) {
+            var id = match[1], embedurl = 'https://streamable.com/s/' + id;
+            var element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '480')
+                                 .attr('height', '270')
+                                 .attr('frameborder', '0');
+            return element.prop('outerHTML');
+        }
+    });
+
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
     };
 
 

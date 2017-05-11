@@ -26,6 +26,9 @@ weechat.factory('utils', function() {
       return /iPhone|iPad|iPod/i.test(navigator.userAgent);
     };
 
+    var isCordova = function() {
+        return window.cordova !== undefined;
+    }
 
     // Inject a javascript (used by KaTeX)
     var inject_script = function(script_url) {
@@ -52,6 +55,7 @@ weechat.factory('utils', function() {
     	getClassStyle: getClassStyle,
         isMobileUi: isMobileUi,
         isiOS: isiOS,
+        isCordova: isCordova,
         inject_script: inject_script,
         inject_css: inject_css,
     };
