@@ -34,6 +34,8 @@ Running in Chromium browser:
 
 ![Glowing bear screenshot iYIs version 1](https://p.ume.ink/i/f6/2e7f21c2c41fdf8ea83340b0149ce58ace330f.png)
 
+![Glowing bear screenshot iYIs version 2](https://p.ume.ink/i/79/05afb7cfc6602cb0cc56a6853cd286c0a70ab9.gif)
+
 **Official version**
 
 Running as Chrome application in a separate window on Windows and as Android app:

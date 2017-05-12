@@ -950,7 +950,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         var jt_toBottom = function() {
             htmlHandler.toggleJumpTo("toBottom", 0);
-            $timeout(function(){                                                                                             
+            $timeout(function(){
                 if ( window.getComputedStyle(document.getElementById("sidebar"),null).getPropertyValue("transform") !== "matrix(1, 0, 0, 1, 0, 0)" ) {
                   document.getElementById('sendMessage').focus();
                 }
@@ -1033,6 +1033,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       $rootScope.lastActiveTime = Date.now();
       if ($rootScope.bufferBottom) {
         htmlHandler.refreshReadmarker();
+        document.getElementById("end-of-buffer").scrollIntoView();
       }
     };
 
