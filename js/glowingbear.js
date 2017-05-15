@@ -577,11 +577,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         var bl = document.getElementById('bufferlines');
         if (bottom) {
             eob.scrollIntoView();
-            $rootScope.updateJumpToButtons("toBottom");
-        } else {
-            $rootScope.updateJumpToButtons();
         }
         $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+        $rootScope.updateJumpToButtons();
+
+        var rdm = document.getElementById('readmarker');
+        if ( ($rootScope.onfocus === undefined || ! $rootScope.onfocus)
+            && rdm !== null
+            && (bl.scrollTop - rdm.parentNode.parentNode.parentNode.offsetTop) > 44 ) {
+            rdm.parentNode.parentNode.parentNode.scrollIntoView(true);
+        }
     };
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines, scrollToMention) {
         // First, get scrolling status *before* modification
@@ -737,7 +742,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         } else {
             // Toggle jumpTo button
             $rootScope.isChatBuffer = true;
-            $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+            $timeout(function(){
+                $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+            }, 200);
         }
         // Check if option no nicklist is set
         if (settings.nonicklist) {
@@ -966,7 +973,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         var bl = document.getElementById('bufferlines');
 
         // toggle jumpToBottom
-        if ( (eob.offsetTop - bl.scrollTop) > 1.2 * bl.clientHeight ) {
+        if ( ! $rootScope.bufferBottom ) {
             htmlHandler.toggleJumpTo("toBottom", 1);
         } else {
             jt_toBottom();
@@ -1024,12 +1031,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     });
 
     $window.onfocus = function() {
+      $rootScope.onfocus = true;
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
           do_initAndRefreshJumpTo();
       }
     };
 
     $window.onblur = function() {
+      $rootScope.onfocus = false;
       $rootScope.lastActiveTime = Date.now();
       if ($rootScope.bufferBottom) {
         htmlHandler.refreshReadmarker();
