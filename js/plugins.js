@@ -280,9 +280,9 @@ plugins.factory('userPlugins', function() {
             /* A fukung.net URL may end by an image extension but is not a direct link. */
             if (url.indexOf("^https?://fukung.net/v/") != -1) {
                 url = url.replace(/.*\//, "http://media.fukung.net/imgs/");
-            } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
+//            } else if (url.match(/^http:\/\/(i\.)?imgur\.com\//i)) {
                 // imgur: always use https. avoids mixed content warnings
-                url = url.replace(/^http:/, "https:");
+//                url = url.replace(/^http:/, "https:");
             } else if (url.match(/^https:\/\/www\.dropbox\.com\/s\/[a-z0-9]+\//i)) {
                 // Dropbox requires a get parameter, dl=1
                 var dbox_url = document.createElement("a");
@@ -303,6 +303,10 @@ plugins.factory('userPlugins', function() {
                 }
                 url = base_url + dbox_params.join('&');
             }
+
+            // poor compatibility
+            url = url.replace(/^http:/, "https:");
+
             return function() {
                 var element = this.getElement();
                 var imgElem = angular.element('<a></a>')
@@ -472,6 +476,43 @@ plugins.factory('userPlugins', function() {
         }
     });
 
+    // Embed fars.ee pastebin text
+    var farseePlugin = new UrlPlugin('FarseePB', function(url) {
+        var regexp = /^https?:\/\/fars\.ee\/([^.?\/]+)(?:\.(?!bmp|gif|ico|jpeg|jpg|png|svg|svgz|tif|tiff|webp)[a-z]+)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\?style=)([^-#.?\/]+)(#L-[0-9]+)?)?$/i;
+        var match = url.match(regexp);
+        if (match) {
+            var id        = match[1];
+            var lexer     = match[2] !== undefined ? match[2] : "text";
+            var lnum      = match[3] !== undefined ? match[3] : "";
+            var formatter = match[4] !== undefined ? match[4] : "html";
+            var lnum      = match[5] !== undefined ? match[5] : lnum;
+            var style     = match[6] !== undefined ? match[6] : "xcode";
+            var lnum      = match[7] !== undefined ? match[7] : lnum;
+            var embedurl  = "https://fars.ee/" + id + "/" + lexer + "/" + formatter + "?style=" + style + lnum;
+            var element   = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '1000')
+                                 .attr('height', '300');
+            return element.prop('outerHTML');
+        }
+    });
+
+    // Embed p.ume.ink pastebin text
+    var pumeinkPlugin = new UrlPlugin('P.UME.INK', function(url) {
+        var regexp = /^https?:\/\/p\.ume\.ink\/t\/([a-z]+)[^#]*(#n-[0-9]+)?/i;
+        var match = url.match(regexp);
+        if (match) {
+            var id = match[1],
+                lnum = match[2] !== undefined ? match[2] : "",
+                embedurl = "https://p.ume.ink/t/" + id + lnum,
+                element = angular.element('<iframe></iframe>')
+                                 .attr('src', embedurl)
+                                 .attr('width', '1000')
+                                 .attr('height', '300');
+            return element.prop('outerHTML');
+        }
+    });
+
     var pastebinPlugin = new UrlPlugin('Pastebin', function(url) {
         var regexp = /^https?:\/\/pastebin\.com\/([^.?]+)/i;
         var match = url.match(regexp);
@@ -480,8 +521,8 @@ plugins.factory('userPlugins', function() {
                 embedurl = "https://pastebin.com/embed_iframe/" + id,
                 element = angular.element('<iframe></iframe>')
                                  .attr('src', embedurl)
-                                 .attr('width', '100%')
-                                 .attr('height', '480');
+                                 .attr('width', '1000')
+                                 .attr('height', '300');
             return element.prop('outerHTML');
         }
     });
@@ -570,7 +611,7 @@ plugins.factory('userPlugins', function() {
     });
 
     return {
-        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
+        plugins: [youtubePlugin, dailymotionPlugin, allocinePlugin, imagePlugin, videoPlugin, audioPlugin, spotifyPlugin, cloudmusicPlugin, googlemapPlugin, asciinemaPlugin, yrPlugin, gistPlugin, farseePlugin, pumeinkPlugin, pastebinPlugin, giphyPlugin, tweetPlugin, vinePlugin, streamablePlugin]
     };
 
 

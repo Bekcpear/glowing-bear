@@ -163,6 +163,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         $scope.bufferlines = ab.lines;
         $scope.nicklist = ab.nicklist;
+        $scope.bufferSwitchStat  = 0;
 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
@@ -579,7 +580,15 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             eob.scrollIntoView();
         }
         $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
-        $rootScope.updateJumpToButtons();
+        if ( $scope.bufferSwitchStat === 0 ) {
+            $timeout(function(){
+                $rootScope.updateJumpToButtons();
+                $scope.bufferSwitchStat = 2;
+            }, 1000);
+            $scope.bufferSwitchStat = 1;
+        } else if ( $scope.bufferSwitchStat === 2 ) {
+            $rootScope.updateJumpToButtons();
+        }
 
         var rdm = document.getElementById('readmarker');
         if ( ($rootScope.onfocus === undefined || ! $rootScope.onfocus)
@@ -609,7 +618,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
                 if (scrollToReadmarker && readmarker) {
                     // Switching channels, scroll to read marker
                     if ( ! isAt[1] ) {
-                      bl.scrollTop = readmarker.offsetTop - readmarker.parentElement.scrollHeight + readmarker.scrollHeight;
+                      readmarker.parentElement.scrollIntoView(true);
                       isAt[1] = true;
                     }
                 } else if (scrollToMention && mention && mention.length != 0) {
@@ -742,9 +751,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         } else {
             // Toggle jumpTo button
             $rootScope.isChatBuffer = true;
-            $timeout(function(){
-                $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
-            }, 200);
+            $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
         }
         // Check if option no nicklist is set
         if (settings.nonicklist) {
