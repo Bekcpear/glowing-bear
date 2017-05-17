@@ -159,7 +159,7 @@ var UrlPlugin = function(name, urlCallback) {
  * 3. Add it to the plugins array.
  *
  */
-plugins.factory('userPlugins', function() {
+plugins.factory('userPlugins', function($http) {
     // standard JSONp origin policy trick
     var jsonp = function (url, callback) {
         var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -478,23 +478,40 @@ plugins.factory('userPlugins', function() {
 
     // Embed fars.ee pastebin text
     var farseePlugin = new UrlPlugin('FarseePB', function(url) {
-        var regexp = /^https?:\/\/fars\.ee\/([^.?\/]+)(?:\.(?!bmp|gif|ico|jpeg|jpg|png|svg|svgz|tif|tiff|webp)[a-z]+)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\?style=)([^-#.?\/]+)(#L-[0-9]+)?)?$/i;
+        // TODO
+        /*
+        var regexp = /^https?:\/\/fars\.ee\/([^.?\/]+)(?:\.[a-z]+)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\/)([^-#.?\/]+)(#L-[0-9]+)?)?(?:(?:\?style=)([^-#.?\/]+)(#L-[0-9]+)?)?$/i;
         var match = url.match(regexp);
         if (match) {
-            var id        = match[1];
-            var lexer     = match[2] !== undefined ? match[2] : "text";
-            var lnum      = match[3] !== undefined ? match[3] : "";
-            var formatter = match[4] !== undefined ? match[4] : "html";
-            var lnum      = match[5] !== undefined ? match[5] : lnum;
-            var style     = match[6] !== undefined ? match[6] : "xcode";
-            var lnum      = match[7] !== undefined ? match[7] : lnum;
-            var embedurl  = "https://fars.ee/" + id + "/" + lexer + "/" + formatter + "?style=" + style + lnum;
-            var element   = angular.element('<iframe></iframe>')
-                                 .attr('src', embedurl)
-                                 .attr('width', '1000')
-                                 .attr('height', '300');
-            return element.prop('outerHTML');
+            $http({
+                method: 'HEAD',
+                url: url,
+                headers: { 'Accept-Encoding': 'sdch, br' }
+                // cause error, reason: https://stackoverflow.com/questions/3778706/is-it-possible-to-force-jquery-to-make-ajax-calls-for-urls-with-gzip-deflate-ena
+                //                  and https://stackoverflow.com/questions/32463340/angular-gunzip-json-file-automatically-refused-to-set-unsafe-header-accept-en
+            }).then(function successCallback(response) {
+                    if ( response.headers("Content-Type").match(/^text|^application\/javascript|^application\/x-sh/i) ) {
+                        console.log(response.headers("Content-Length"));
+                        //
+                        var id        = match[1];
+                        var lexer     = match[2] !== undefined ? match[2] : "text";
+                        var lnum      = match[3] !== undefined ? match[3] : "";
+                        var formatter = match[4] !== undefined ? match[4] : "html";
+                        var lnum      = match[5] !== undefined ? match[5] : lnum;
+                        var style     = match[6] !== undefined ? match[6] : "xcode";
+                        var lnum      = match[7] !== undefined ? match[7] : lnum;
+                        var embedurl  = "https://fars.ee/" + id + "/" + lexer + "/" + formatter + "?style=" + style + lnum;
+                        console.log(embedurl);
+                        var element   = angular.element('<iframe></iframe>')
+                                             .attr('src', embedurl)
+                                             .attr('width', '1000')
+                                             .attr('height', '300');
+                        return element.prop('outerHTML');
+                    }
+                }, function errorCallback(response) {}
+            );
         }
+        */
     });
 
     // Embed p.ume.ink pastebin text

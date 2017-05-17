@@ -478,7 +478,8 @@ weechat.factory('htmlHandler', ['$timeout', 'utils', function($timeout, utils) {
       readmarker.parentNode.removeChild(readmarker);
     }
 
-    var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByTagName('tbody')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByTagName('tbody').length - 1];
+    var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline').length - 1].parentNode;
+
     lasttbody.removeChild(lasttbody.getElementsByClassName('fclear')[0]);
 
     var rdmTr = document.createElement('tr');

@@ -591,7 +591,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         }
 
         var rdm = document.getElementById('readmarker');
-        if ( ($rootScope.onfocus === undefined || ! $rootScope.onfocus)
+        if ( ($rootScope.onfocus === undefined || $rootScope.onfocus === 0)
             && rdm !== null
             && (bl.scrollTop - rdm.parentNode.parentNode.parentNode.offsetTop) > 44 ) {
             rdm.parentNode.parentNode.parentNode.scrollIntoView(true);
@@ -1038,18 +1038,20 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     });
 
     $window.onfocus = function() {
-      $rootScope.onfocus = true;
+      $rootScope.onfocus = 1;
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
           do_initAndRefreshJumpTo();
       }
     };
 
     $window.onblur = function() {
-      $rootScope.onfocus = false;
+      $rootScope.onfocus = 0;
       $rootScope.lastActiveTime = Date.now();
       if ($rootScope.bufferBottom) {
         htmlHandler.refreshReadmarker();
         document.getElementById("end-of-buffer").scrollIntoView();
+      } else {
+        $rootScope.onfocus = -1;
       }
     };
 
