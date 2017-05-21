@@ -1,6 +1,111 @@
 /*
  * Written by Bekcpear <i@ume.ink>
  *
+ *
+ * Color:                     dark                    ->  light
+ *
+ *  body
+ *    bg                    - #303030                 ->  #fafafa
+ *    fg                    - #fafafa                 ->  #303030
+ *
+ *  topbar
+ *    bg                    - #212121                 ->  #f5f5f5
+ *    box-shadow            - 0 5 15 rgba(0,0,0,.5)   ->  0 2 7 rgba(0,0,0,.2)
+ *
+ *  sidebar
+ *    a fg                  - #757575                 ->  #757575
+ *    a bg                  - #424242                 ->  #e0e0e0
+ *    filter fg             - #fafafa                 ->  #303030
+ *    filter bg             - #303030                 ->  #fafafa
+ *    filter bg (hover)     - #212121                 ->  #eee
+ *    nav-pill a fg         - #eee                    ->  #616161
+ *    nav-pill a fg (focus) - #fafafa                 ->  #424242
+ *    nav-pill a bg (hover) - #383838                 ->  #eee
+ *    nav-pill a border     - #383838                 ->  #eee
+ *    badge fg              - #757575                 ->  #757575 & font-weight: normal
+ *    box-shadow            - rgba(0,0,0,0.5)         ->  rgba(0,0,0,0.2)
+ *
+ *  bufferlines
+ *    border-bottom         - #424242                 ->  #e0e0e0
+ *    fetchmore fg          - #fafafa                 ->  #fafafa
+ *    fetchmore bg(hover)   - #616161                 ->  #5c6bc0
+ *    fetchmore info fg     - #616161                 ->  #e0e0e0
+ *    lastRead fg           - #616161                 ->  #9e9e9e
+ *
+ *  message
+ *    fg                    - #fafafa                 ->  #fafafa
+ *    msgFrom fg            - #616161                 ->  #9e9e9e
+ *    priv bg               - #424242                 ->  #5c6bc0
+ *    selfMsg bg            - #616161                 ->  #e0e0e0 & fg should be #424242
+ *    highlight bg          - #607d8b                 ->  #ec407a
+ *    noPriv fg             - #fafafa                 ->  #424242
+ *    noPriv border-bottom  - rgba(33,33,33, 0.3)     ->  rgba(189,189,189, 0.2)
+ *    noPriv prefix         - #616161                 ->  #9e9e9e
+ *    err fg                - #fafafa                 ->  #fafafa
+ *    err bg                - #c46056                 ->  #ef5350
+ *    err sender fg         - #fafafa                 ->  #fafafa
+ *
+ *  nicklist
+ *    before noti fg        - #616161                 ->  #9e9e9e
+ *    box-shadow            - rgba(0,0,0,0.5)         ->  rgba(0,0,0,0.2)
+ *    li bg (hover)         - #424242                 ->  #eee
+ *    a border-bottom       - #383838                 ->  #eee
+ *    a fg                  - #757575                 ->  #757575
+ *
+ *  inputform
+ *    textarea bg           - #424242                 ->  #f5f5f5
+ *    textarea fg           - #fafafa                 ->  #424242
+ *    btn fg (& hover)      - #fafafa                 ->  #616161
+ *    btn bg (focus, active)- #303030                 ->  #e0e0e0
+ *    imgUuid bg            - #383838                 ->  #e0e0e0
+ *    imgUuid fg            - #757575                 ->  #757575
+ *    imgUp process bar bg  - rgba(186, 233, 255, 0.6)->  #c5cae9
+ *    msgSegNoti bg         - #c46056                 ->  #ef5350
+ *    msgSegNoti fg         - #fafafa                 ->  #fafafa
+ *
+ *  jumpTo
+ *    fg                    - #757575                 ->  #fafafa
+ *    bg                    - #272727                 ->  #7986cb
+ *
+ *  button
+ *    fg                    - #fafafa                 ->  #fafafa
+ *    bg                    - #505050                 ->  #7986cb
+ *    fg(focus)             - #fafafa                 ->  #fafafa
+ *    bg(focus)             - #303030                 ->  #9fa8da
+ *    
+ *  model
+ *    bg                    - #424242                 ->  #fff
+ *    fg                    - #fafafa                 ->  #424242
+ *    fg(close)             - #e0e0e0                 ->  #303030
+ *    fg(close hover)       - #fafafa                 ->  #303030
+ *    form bg               - #212121                 ->  #fafafa
+ *    border fg             - rgba(250, 250, 250, 0.3)->  rgba(189,189,189, 0.3)
+ *
+ *  panel
+ *    bg                    - #424242                 ->  #fafafa
+ *    input bg              - #323232                 ->  #e0e0e0
+ *    input fg              - #fafafa                 ->  #424242
+ *  
+ *  alert
+ *    bg                    - #c46056                 ->  #ef5350
+ *    fg                    - #fafafa                 ->  #fafafa
+ *
+ *  a
+ *    fg                    - #9fd0e6                 ->  #9fd0e6
+ *    fg(hover)             - #b8deef                 ->  #9fd0e6
+ *
+ *  scrollbar
+ *    thumb bg              - #424242                 ->  #e0e0e0
+ *    thumb bg (embed)      - #e0e0e0                 ->  #e0e0e0
+ *
+ *  selection
+ *    bg                    - #757575                 ->  #c5cae9
+ *    bg (selection)        - #81d4fa                 ->  #81d4fa
+ *
+ *  version
+ *    fg                    - #ccc                    ->  #9e9e9e
+ *
+ *
  * */
 
 * {
@@ -21,17 +126,17 @@
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
   -webkit-border-radius: 5px;
-  background: #424242;
+  background: #e0e0e0;
 }
 
 button {
-  background-color: #505050;
+  background-color: #7986cb;
   border: none;
 }
 
 .btn-primary, .btn-default {
   outline: none;
-  background-color: #505050;
+  background-color: #7986cb;
   border-radius: 20px;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
@@ -45,21 +150,21 @@ button {
 
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
   outline: none;
-  background-color: #303030;
+  background-color: #9fa8da;
   border: none;
   color: #fafafa;
 }
 
 .btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
   outline: none;
-  background-color: #303030;
+  background-color: #9fa8da;
   border: none;
   color: #fafafa;
 }
 
 .btn-primary.active, .btn-primary:active, .btn-default.active, .btn-default:active, .btn-primary.hover, .btn-primary:hover, .btn-default.hover, .btn-default:hover, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
   outline: none;
-  background-color: #303030;
+  background-color: #9fa8da;
   border: none;
   color: #fafafa;
 }
@@ -70,56 +175,51 @@ button {
 }
 
 .panel-group .panel {
-  background-color: #424242;
+  background-color: #fafafa;
   border-radius: 20px !important;
 }
 
 .panel-group .panel input {
-  background: #323232;
-  color: #fafafa;
+  background: #e0e0e0;
+  color: #424242;
   border-radius: 20px !important;
   border: none;
   box-shadow: none;
 }
 
-a, a:visited, a:focus {
+a, a:visited, a:focus, a:hover {
   color: #9fd0e6;
   text-decoration: none;
 }
 
-a:hover {
-  color: #b8deef;
-  text-decoration: none;
-}
-
 ::selection {
-  background-color: #757575;
+  background-color: #c5cae9;
 }
 
 ::-moz-selection {
-  background-color: #757575;
+  background-color: #c5cae9;
 }
 
 ::-webkit-selection {
-  background-color: #757575;
+  background-color: #c5cae9;
 }
 
 ::-ms-selection {
-  background-color: #757575;
+  background-color: #c5cae9;
 }
 
 ::-o-selection {
-  background-color: #757575;
+  background-color: #c5cae9;
 }
 
 body {
-  background-color: #303030;
+  background-color: #fafafa;
   font-family: Roboto, Helvetica Neue, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", sans-serif !important;
-  color: #fafafa;
+  color: #303030;
 }
 
 .modal-content {
-  background-color: #424242;
+  background-color: #fff;
   border-radius: 20px;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
@@ -138,8 +238,8 @@ body {
 
 .modal-content .form-control {
   outline: none;
-  background-color: #212121;
-  color: #fafafa;
+  background-color: #fafafa;
+  color: #424242;
 }
 
 .modal-content .form-control:focus {
@@ -155,28 +255,28 @@ body {
 }
 
 .modal-header .close:hover {
-  color: #fafafa;
+  color: #303030;
 }
 
 .modal-header .close {
   font-family: monospace;
-  color: #e0e0e0;
+  color: #303030;
 }
 
 .modal-footer {
   padding: 15px 0 0 0;
   margin: 15px;
-  border-top: 1px solid rgba(250, 250, 250, 0.3);
+  border-top: 1px solid rgba(189, 189, 189, 0.3);
 }
 
 .version {
-  color: #ccc;
+  color: #9e9e9e;
   margin-top: -2px;
 }
 
 .alert-danger {
   color: #fafafa;
-  background-color: #c46056;
+  background-color: #ef5350;
   border: none;
 }
 
@@ -188,13 +288,13 @@ body {
 #topbar {
   position: fixed;
   top: 0;
-  background: #212121;
+  background: #f5f5f5;
   height: 60px;
   max-height: 60px;
   padding: 12px 0;
-  -webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5);
-  -moz-box-shadow: 0 5px 15px rgba(0,0,0,.5);
-  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  -webkit-box-shadow: 0 2px 7px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 2px 7px rgba(0,0,0,.2);
+  box-shadow: 0 2px 7px rgba(0,0,0,.2);
   font-family: Roboto, Helvetica Neue, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", sans-serif !important;
 }
 
@@ -224,9 +324,9 @@ body {
   min-height: calc(100% - 60px);
   width: 200px !important;
   padding: 0 !important;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5); 
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5); 
-  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+  box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 }
 
 #sidebar .actions {
@@ -250,19 +350,19 @@ body {
 }
 
 #sidebar .actions a:hover {
-  background-color: #424242;
+  background-color: #e0e0e0;
 }
 
 #sidebar #bufferFilter {
-  background-color: #303030;
+  background-color: #fafafa;
   box-shadow: none;
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
-  color: #fafafa;
+  color: #303030;
 }
 
 #sidebar #bufferFilter:hover, #sidebar #bufferFilter:focus {
-  background-color: #212121;
+  background-color: #eee;
 }
 
 #sidebar .buffername:focus, .buffername:hover {
@@ -283,12 +383,12 @@ body {
   margin: 0 10px;
   padding: 10px 15px !important;
   font-size: 14px;
-  color: #eee;
-  border-bottom: 1px solid #383838;
+  color: #616161;
+  border-bottom: 1px solid #eee;
 }
 
 #sidebar .nav-pills>li.active, .nav-pills>li.active:focus, .nav-pills>li.active:hover, .nav>li:focus, .nav>li:hover {
-  background-color: #383838;
+  background-color: #eee;
 }
 
 #sidebar .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover, .nav>li>a:focus, .nav>li>a:hover {
@@ -300,7 +400,7 @@ body {
 }
 
 #sidebar .nav-pills > li > a:hover, .nav-pills > li > a:hover span {
-  color: #fafafa;
+  color: #424242;
 }
 
 #sidebar .nav-pills > li > a:active, .nav-pills > li > a:active span, .nav-pills > li.highlight > a, .nav-pills > li.highlight > a span {
@@ -310,6 +410,7 @@ body {
 #sidebar .buffer.unread .badge, #sidebar .buffer.notification .badge {
   background-color: transparent;
   color: #757575;
+  font-weight: normal;
 }
 
 #bufferlines {
@@ -317,7 +418,7 @@ body {
   top: 60px;
   height: calc(100% - 60px);
   padding-top: 9px;
-  border-bottom: 1px solid #424242;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .content[sidebar-state=visible] #bufferlines {
@@ -344,11 +445,11 @@ body {
 }
 
 #bufferlines tbody .fetchmorelines:hover {
-  background-color: #616161;
+  background-color: #5c6bc0;
 }
 
 #bufferlines tbody .fetchmorelines + span {
-  color: #616161;
+  color: #e0e0e0;
 }
 
 #bufferlines tbody .bufferline td {
@@ -361,7 +462,7 @@ body {
 }
 
 #bufferlines tbody .buf-highlight .message {
-  background-color: #607d8b !important;
+  background-color: #ec407a !important;
 }
 
 #bufferlines tbody .bufferline .message .embed {
@@ -378,20 +479,20 @@ body {
 }
 
 .embed ::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
+  background: #e0e0e0;
 }
 
 .embed ::selection {
-  background-color: #81D4FA;
+  background-color: #81d4aA;
 }
 
 #bufferlines tbody .bufferline .msgfrom {
-  color: #616161;
+  color: #9e9e9e;
 }
 
 #bufferlines tbody .buf-notprivmsg {
-  border-bottom: 1px solid rgba(33,33,33, 0.3);
-  color: #fafafa;
+  border-bottom: 1px solid rgba(189,189,189, 0.2);
+  color: #424242;
   border-radius: 0 !important;
   -moz-border-radius: 0 !important;
   -webkit-border-radius: 0 !important;
@@ -442,11 +543,11 @@ body {
 }
 
 #bufferlines tbody .buf-notprivmsg .prefix a {
-  color: #616161;
+  color: #9e9e9e;
 }
 
 #bufferlines tbody .buf-err {
-  background: #c46056;
+  background: #ef5350;
   border-bottom: none !important;
   color: #fafafa !important;
   margin: 3px 0 !important;
@@ -501,7 +602,7 @@ body {
   -webkit-border-radius: 20px;
   color: #fafafa;
   line-height: normal;
-  background-color: #424242;
+  background-color: #5c6bc0;
   width: auto;
   max-width: 100%;
   position: relative;
@@ -516,7 +617,8 @@ body {
 
 #bufferlines tbody .buf-selfmsg .message {
   float: right;
-  background-color: #616161;
+  background-color: #e0e0e0;
+  color: #424242;
 }
 
 #bufferlines tbody .buf-selfmsg .prefix {
@@ -552,7 +654,7 @@ body {
   content: "⇑ last read";
   text-align: center;
   font-size: 10px;
-  color: #616161;
+  color: #9e9e9e;
 }
 
 #bufferlines .readmarker #readmarker {
@@ -569,7 +671,7 @@ body {
 
 #nicklist::before {
   content: "Nicklist:";
-  color: #616161;
+  color: #9e9e9e;
   padding-left: 5px;
 }
 
@@ -581,15 +683,15 @@ body {
   padding: 10px 0 20px 0;
   overflow-y: overlay;
   overflow-x: hidden;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
   top: 60px;
   bottom: 0;
 }
 
 #nicklist li:hover {
-  background-color: #383838;
+  background-color: #eee;
 }
 
 #nicklist li {
@@ -599,7 +701,7 @@ body {
 #nicklist a {
   padding: 5px;
   margin: 0 5px;
-  border-bottom: #383838 1px solid;
+  border-bottom: #eee 1px solid;
   color: #757575;
 }
 
@@ -639,12 +741,12 @@ body {
 
 #inputform #msgSegmentedNoti {
   bottom: 100%;
-  background: #c46056;
+  background: #ef5350;
   color: #fafafa;
 }
 
 #inputform #imgur-upload-uuid {
-  background: #383838;
+  background: #e0e0e0;
   color: #757575;
 }
 
@@ -667,12 +769,12 @@ body {
   height: 100%;
   margin-bottom: 0 !important;
   line-height: normal;
-  color: #fafafa;
+  color: #424242;
   box-shadow: none;
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none;
-  background: #424242;
+  background: #f5f5f5;
 }
 
 .input-group #sendMessage:active, .input-group #sendMessage:focus {
@@ -700,11 +802,11 @@ body {
 }
 
 .input-group .btn, .input-group .btn:hover {
-  color: #fafafa;
+  color: #616161;
 }
 
 .input-group .btn:focus, .input-group .btn:active {
-  background: #303030;
+  background: #e0e0e0;
   box-shadow: none;
 }
 
@@ -740,7 +842,7 @@ body {
 
 .imgur-progress-bar {
   height: 3px;
-  background: rgba(186, 233, 255, 0.6);
+  background: #c5cae9;
 }
 
 .jumpTo {
@@ -752,8 +854,8 @@ body {
   line-height: 16px;
   padding: 10px 0 0 0;
   border-radius: 50%;
-  color: #757575;
-  background-color: #272727;
+  color: #fafafa;
+  background-color: #7986cb;
   text-align: center;
   vertical-align: middle;
   transition-property: color, background-color;
@@ -932,49 +1034,49 @@ body {
     color: #000000;
 }
 .cwf-darkgray {
-    color: #5d5d5d;
+    color: #5b5b5b;
 }
 .cwf-red {
-    color: #c75646;
+    color: #af2513;
 }
 .cwf-lightred {
-    color: #e09690;
+    color: #c15951;
 }
 .cwf-green {
-    color: #8eb33b;
+    color: #7ead18;
 }
 .cwf-lightgreen {
-    color: #cdee69;
+    color: #a0ba53;
 }
 .cwf-brown {
-    color: #b27232;
+    color: #ad6e30;
 }
 .cwf-yellow {
-    color: #ffe377;
+    color: #dbb008;
 }
 .cwf-blue {
-    color: #72b3cc;
+    color: #007ba8;
 }
 .cwf-lightblue {
-    color: #9cd9f0;
+    color: #63b3d3;
 }
 .cwf-magenta {
-    color: #c8a0d1;
+    color: #856a8c;
 }
 .cwf-lightmagenta {
-    color: #fbb1f9;
+    color: #bca0bc;
 }
 .cwf-cyan {
-    color: #67cece;
+    color: #1f8391;
 }
 .cwf-lightcyan {
-    color: #77dfd8;
+    color: #46847e;
 }
 .cwf-gray {
-    color: #b0b0b0;
+    color: #b3b3b3;
 }
 .cwf-white {
-    color: #f7f7f7;
+    color: #4A4A4A;
 }
 
 /* WeeChat colors, background */
@@ -985,49 +1087,47 @@ body {
     background-color: #000000;
 }
 .cwb-darkgray {
-    background-color: #5d5d5d;
+    background-color: #2E2E2E;
 }
 .cwb-red {
-    background-color: #c75646;
+    background-color: #642B23;
 }
 .cwb-lightred {
-    background-color: #e09690;
+    background-color: #704B48;
 }
 .cwb-green {
-    background-color: #8eb33b;
+    background-color: #475A1E;
 }
 .cwb-lightgreen {
-    background-color: #cdee69;
+    background-color: #667734;
 }
 .cwb-brown {
-    background-color: #b27232;
+    background-color: #593919;
 }
 .cwb-yellow {
-    background-color: #ffe377;
+    background-color: #80723C;
 }
 .cwb-blue {
-    background-color: #72b3cc;
+    background-color: #395A66;
 }
 .cwb-lightblue {
-    background-color: #9cd9f0;
+    background-color: #4E6C78;
 }
 .cwb-magenta {
-    background-color: #c8a0d1;
+    background-color: #504054;
 }
 .cwb-lightmagenta {
-    background-color: #fbb1f9;
+    background-color: #644764;
 }
 .cwb-cyan {
-    background-color: #218693;
+    background-color: #10434A;
 }
 .cwb-lightcyan {
-    background-color: #77dfd8;
+    background-color: #182D2B;
 }
 .cwb-gray {
-    background-color: #b0b0b0;
+    background-color: #464646;
 }
 .cwb-white {
-    background-color: #f7f7f7;
+    background-color: #4A4A4A;
 }
-
-

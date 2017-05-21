@@ -8,19 +8,24 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('htmlHandler', ['$timeout', 'utils', function($timeout, utils) {
+weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($rootScope, $timeout, utils) {
 
   var spreElem = undefined;
   var spreElem_height_px_last = "";
 
   var jumpToStat   = 1;
-  var jumpToTimers = []; // list the timers (sort by priority)
+  var jumpToTimers = []; // list the timers (sorted by priority)
   // pri
   //   -> buttons
   //     -> visibility
   //       -> timers
   //         -> timer
   //         -> expire
+  var readmarkerAttr = [];
+  // [0] -> flash action timer promise
+  // [1] -> showAndFlash :: waiting showing timer
+  // [2] -> refresh :: waiting deleting timer
+  // [3] -> refresh :: waiting deleting timer
 
   var resetInput = function(uuidOnly, isiOS) {
 
@@ -470,34 +475,90 @@ weechat.factory('htmlHandler', ['$timeout', 'utils', function($timeout, utils) {
 
   };
 
-  var refreshReadmarker = function() {
+  var handleReadmarker = function(action) {
 
-    var readmarker = document.getElementsByClassName('readmarker')[0];
-
-    if ( readmarker !== undefined ) {
-      readmarker.parentNode.removeChild(readmarker);
+    if ( document.querySelectorAll('.readmarker').length > 0 ) {
+      var readmarker = document.querySelectorAll('.readmarker')[document.querySelectorAll('.readmarker').length - 1];
     }
 
-    var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline').length - 1].parentNode;
+    if (! readmarker && action !== "refresh") return false;
 
-    lasttbody.removeChild(lasttbody.getElementsByClassName('fclear')[0]);
+    switch (action) {
+      case "refresh":
+        $rootScope.readmarkerRefreshing = true;
+        var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline').length - 1].parentNode;
 
-    var rdmTr = document.createElement('tr');
-    rdmTr.setAttribute("class", "readmarker");
-    rdmTr.setAttribute("ng-if", "activeBuffer().lastSeen==$index");
-    var rdmTd = document.createElement('td');
-    rdmTd.setAttribute("colspan", "3");
-    var rdmHr = document.createElement("hr");
-    rdmHr.setAttribute("id", "readmarker");
+        var deleteLag = 0;
+        if ( readmarker !== undefined ) {
+          readmarker.style.transitionProperty = '';
+          readmarker.style.transitionDuration = '0.5s';
+          readmarker.style.height = '0';
+          deleteLag = 501;
+          if ( lasttbody.getElementsByClassName('readmarker').length > 0 ) {
+            $timeout.cancel(readmarkerAttr[3]);
+            readmarkerAttr[3] = $timeout(function() {
+              $rootScope.readmarkerRefreshing = false;
+            }, deleteLag);
+            return true;
+          }
+        }
+        $timeout.cancel(readmarkerAttr[2]);
+        readmarkerAttr[2] = $timeout(function() {
+          if (deleteLag !== 0) {
+            readmarker.parentElement.removeChild(readmarker);
+            lasttbody.removeChild(lasttbody.getElementsByClassName('fclear')[0]);
+          }
 
-    rdmTd.appendChild(rdmHr);
-    rdmTr.appendChild(rdmTd);
+          var rdmTr = document.createElement('tr');
+          rdmTr.setAttribute("class", "readmarker");
+          rdmTr.setAttribute("style", "height: 0;");
+          var rdmTd = document.createElement('td');
+          rdmTd.setAttribute("colspan", "3");
+          var rdmHr = document.createElement("hr");
+          rdmHr.setAttribute("id", "readmarker");
 
-    var fclear = document.createElement("tr");
-    fclear.setAttribute("class", "fclear");
+          rdmTd.appendChild(rdmHr);
+          rdmTr.appendChild(rdmTd);
 
-    lasttbody.appendChild(rdmTr);
-    lasttbody.appendChild(fclear);
+          var fclear = document.createElement("tr");
+          fclear.setAttribute("class", "fclear");
+
+          lasttbody.appendChild(rdmTr);
+          lasttbody.appendChild(fclear);
+
+          $rootScope.readmarkerRefreshing = false;
+        }, deleteLag);
+        break;
+      case "show":
+        var flashLag = 0;
+        if (parseInt(window.getComputedStyle(readmarker, null).getPropertyValue("height")) !== 20) {
+          readmarker.style.transitionProperty = '';
+          readmarker.style.transitionDuration = ''; // default duration 0.5s, according to CSS file, iYIs.css
+          readmarker.style.height = '20px';
+          flashLag = 501;
+        }
+        return flashLag;
+      case "showAndFlash":
+        var flashLag = handleReadmarker("show");
+        $timeout.cancel(readmarkerAttr[1]);
+        readmarkerAttr[1] = $timeout(function() {
+          if (window.getComputedStyle(readmarker, null).getPropertyValue("background-color") !== "rgb(187, 184, 215)" 
+           && window.getComputedStyle(readmarker, null).getPropertyValue("background-color") !== "rgba(187, 184, 215, 1)") {
+            readmarker.style.transitionProperty = 'background-color';
+            readmarker.style.transitionDuration = '0.1s';
+            readmarker.style.backgroundColor = 'rgba(187, 184, 215, 1)';
+            $timeout.cancel(readmarkerAttr[0]);
+            readmarkerAttr[0] = $timeout(function() {
+              readmarker.style.transitionProperty = 'background-color';
+              readmarker.style.transitionDuration = '0.5s';
+              readmarker.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+            }, 500);
+          }
+        }, flashLag);
+        break;
+      default:
+        console.log("handle readmarker error: invalid action: " + action);
+    }
 
   };
 
@@ -508,7 +569,7 @@ weechat.factory('htmlHandler', ['$timeout', 'utils', function($timeout, utils) {
     addImgUuid: addImgUuid,
     adjInpBar: adjInpBar,
     toggleJumpTo: toggleJumpTo,
-    refreshReadmarker: refreshReadmarker
+    handleReadmarker: handleReadmarker
   };
 
 }]);

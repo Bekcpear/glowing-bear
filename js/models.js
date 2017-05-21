@@ -87,6 +87,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
         var notification = 0;
         var unread = 0;
         var lastSeen = -1;
+        var tmpLastSeen = 0;
         // There are two kinds of types: bufferType (free vs formatted) and
         // the kind of type that distinguishes queries from channels etc
         var bufferType = message.type;
@@ -319,6 +320,7 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             requestedLines: requestedLines,
             addLine: addLine,
             lastSeen: lastSeen,
+            tmpLastSeen: tmpLastSeen,
             unread: unread,
             notification: notification,
             notify: notify,
@@ -567,7 +569,11 @@ models.service('models', ['$rootScope', '$filter', 'bufferResume', function($roo
             // turn off the active status for the previous buffer
             previousBuffer.active = false;
             // Save the last line we saw
-            previousBuffer.lastSeen = previousBuffer.lines.length-1;
+            if (! previousBuffer.tmpLastSeen) {
+                previousBuffer.lastSeen = previousBuffer.lines.length-1;
+            } else {
+                previousBuffer.lastSeen = previousBuffer.tmpLastSeen;
+            }
         }
 
         var unreadSum = activeBuffer.unread + activeBuffer.notification;

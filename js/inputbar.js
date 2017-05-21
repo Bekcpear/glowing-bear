@@ -209,13 +209,21 @@ weechat.directive('inputBar', function() {
                   for (var i = 0; i < content.length; ++i) {
                     if ( ! content[i].text.match(/^.{0,1}Re\s/)) {
                       if ( content[i].text.match(/^\[$/)
-                      && content[i+1] && content[i+1].text.match(/^Q0|Q1|T$/)
+                      && content[i+1] && content[i+1].text.match(/^.{1}0|.{1}1|T$/)
                       && content[i+2] && content[i+2].text.match(/^\s-\s$/)
                       && content[i+3] && content[i+3].text
                       && content[i+4] && content[i+4].text.match(/^\]/) ) {
                         nick = content[i+3].text.replace(/^User:/, "");
-                        quote += content[i+4].text.replace(/^\]\s*/, "");
-                        i = i+4;
+                        if ( content[i+4].text.match(/^\]\s$/)
+                        && content[i+5].text.match(/^Re\s/)
+                        && content[i+6].text.match(/^「.+」$/)
+                        && content[i+7].text.match(/^:\s/) ) {
+                          quote += content[i+7].text.replace(/^:\s*/, "");
+                          i = i+7;
+                        } else {
+                          quote += content[i+4].text.replace(/^\]\s*/, "");
+                          i = i+4;
+                        }
                       } else {
                         quote += content[i].text;
                       }
@@ -582,7 +590,7 @@ weechat.directive('inputBar', function() {
                   htmlHandler.toggleJumpTo("toMention", 4, true);
                   break;
                 case 1:
-                  $rootScope.scrollWithBuffer(true, true);
+                  $rootScope.scrollWithBuffer(true, true, false);
                   htmlHandler.toggleJumpTo("toReadmarker", 4, true);
                   break;
                 case 0:

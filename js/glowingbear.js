@@ -28,7 +28,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     };
 
     $scope.command = '';
-    $scope.themes = ['iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['iYIs', 'light-iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
     $scope.jumpToOptions = [
       {id: 1, name: 'default'},
       {id: 2, name: 'always visiable if necessary'},
@@ -590,11 +590,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             $rootScope.updateJumpToButtons();
         }
 
-        var rdm = document.getElementById('readmarker');
-        if ( ($rootScope.onfocus === undefined || $rootScope.onfocus === 0)
-            && rdm !== null
-            && (bl.scrollTop - rdm.parentNode.parentNode.parentNode.offsetTop) > 44 ) {
-            rdm.parentNode.parentNode.parentNode.scrollIntoView(true);
+        if ( ! $rootScope.readmarkerRefreshing ) {
+            var rdm = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
+            if ( ($rootScope.onfocus === undefined || $rootScope.onfocus === 0)
+                && rdm ) {
+                rdm.parentElement.scrollIntoView(true);
+                if (bl.scrollTop - rdm.parentElement.offsetTop > 40
+                 && bl.scrollTop - rdm.parentElement.offsetTop < 50) {
+                    htmlHandler.handleReadmarker("show");
+                }
+            }
         }
     };
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines, scrollToMention) {
@@ -619,6 +624,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
                     // Switching channels, scroll to read marker
                     if ( ! isAt[1] ) {
                       readmarker.parentElement.scrollIntoView(true);
+                      htmlHandler.handleReadmarker("showAndFlash");
                       isAt[1] = true;
                     }
                 } else if (scrollToMention && mention && mention.length != 0) {
@@ -919,7 +925,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       var bl = document.getElementById('bufferlines');
 
       if ( ele === "readmarker" ) {
-        ele = document.querySelector(".readmarker");
+        ele = document.querySelectorAll(".readmarker");
       } else if ( ele === "lastmention" ) {
         ele = document.querySelectorAll(".buf-highlight");
       }
@@ -964,6 +970,9 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         var jt_toBottom = function() {
             htmlHandler.toggleJumpTo("toBottom", 0);
+            if ($rootScope.onfocus === 1) {
+                models.getActiveBuffer().tmpLastSeen = 0;
+            }
             $timeout(function(){
                 if ( window.getComputedStyle(document.getElementById("sidebar"),null).getPropertyValue("transform") !== "matrix(1, 0, 0, 1, 0, 0)" ) {
                   document.getElementById('sendMessage').focus();
@@ -1033,26 +1042,34 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       }
     }
 
+    var do_refreshReadmarker = function() {
+      htmlHandler.handleReadmarker("refresh");
+      models.getActiveBuffer().tmpLastSeen = models.getActiveBuffer().lines.length - 1;
+    }
+
     settings.addCallback('howToShowJumpTo', function() {
       do_initAndRefreshJumpTo();
     });
 
     $window.onfocus = function() {
+      $timeout.cancel($scope.blurTimer);
       $rootScope.onfocus = 1;
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
           do_initAndRefreshJumpTo();
+          htmlHandler.handleReadmarker("showAndFlash");
       }
     };
 
     $window.onblur = function() {
-      $rootScope.onfocus = 0;
-      $rootScope.lastActiveTime = Date.now();
-      if ($rootScope.bufferBottom) {
-        htmlHandler.refreshReadmarker();
-        document.getElementById("end-of-buffer").scrollIntoView();
-      } else {
-        $rootScope.onfocus = -1;
-      }
+      $scope.blurTimer = $timeout(function() {
+        $rootScope.onfocus = 0;
+        $rootScope.lastActiveTime = Date.now();
+        if ($rootScope.bufferBottom) {
+          do_refreshReadmarker();
+        } else {
+          $rootScope.onfocus = -1;
+        }
+      }, 1000);
     };
 
     $rootScope.m2toggleJumpTo = function(btn, mouseenter) {
