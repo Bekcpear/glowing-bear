@@ -534,6 +534,7 @@ body {
 
 #bufferlines .readmarker, #bufferlines .readmarker td {
   display: block;
+  overflow: hidden;
 }
 
 #bufferlines .readmarker {
