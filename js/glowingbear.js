@@ -592,7 +592,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         if ( ! $rootScope.readmarkerRefreshing ) {
             var rdm = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
-            if ( ($rootScope.onfocus === undefined || $rootScope.onfocus === 0)
+            if ( $rootScope.onfocus === 0
                 && rdm ) {
                 rdm.parentElement.scrollIntoView(true);
                 if (bl.scrollTop - rdm.parentElement.offsetTop > 40

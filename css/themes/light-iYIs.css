@@ -91,8 +91,10 @@
  *    fg                    - #fafafa                 ->  #fafafa
  *
  *  a
- *    fg                    - #9fd0e6                 ->  #9fd0e6
- *    fg(hover)             - #b8deef                 ->  #9fd0e6
+ *    fg                    - #9fd0e6                 ->  #007ba8
+ *    fg(hover)             - #b8deef                 ->  #1592bf
+ *    fg (privMsg)          - #9fd0e6                 ->  #9fd0e6
+ *    fg(hover, privMsg)    - #b8deef                 ->  #b8deef
  *
  *  scrollbar
  *    thumb bg              - #424242                 ->  #e0e0e0
@@ -105,6 +107,8 @@
  *  version
  *    fg                    - #ccc                    ->  #9e9e9e
  *
+ *  others
+ *  ...
  *
  * */
 
@@ -148,25 +152,81 @@ button {
   color: #fafafa;
 }
 
-.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+.btn-primary.active.focus,
+.btn-primary.active:focus,
+.btn-primary.active:hover,
+.btn-primary:active.focus,
+.btn-primary:active:focus,
+.btn-primary:active:hover,
+.open>.dropdown-toggle.btn-primary.focus,
+.open>.dropdown-toggle.btn-primary:focus,
+.open>.dropdown-toggle.btn-primary:hover,
+.btn-default.active.focus,
+.btn-default.active:focus,
+.btn-default.active:hover,
+.btn-default:active.focus,
+.btn-default:active:focus,
+.btn-default:active:hover,
+.open>.dropdown-toggle.btn-default.focus,
+.open>.dropdown-toggle.btn-default:focus,
+.open>.dropdown-toggle.btn-default:hover,
+.btn-primary.active,
+.btn-primary:active,
+.btn-default.active,
+.btn-default:active,
+.btn-primary.hover,
+.btn-primary:hover,
+.btn-default.hover,
+.btn-default:hover,
+.btn-primary.focus,
+.btn-primary:focus,
+.open>.dropdown-toggle.btn-primary,
+.btn-default.focus,
+.btn-default:focus,
+.open>.dropdown-toggle.btn-default {
   outline: none;
   background-color: #9fa8da;
   border: none;
   color: #fafafa;
 }
 
-.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
-  outline: none;
-  background-color: #9fa8da;
-  border: none;
-  color: #fafafa;
+.buf-selfmsg .btn-primary, .buf-selfmsg .btn-default {
+  background-color: #bdbdbd;
 }
 
-.btn-primary.active, .btn-primary:active, .btn-default.active, .btn-default:active, .btn-primary.hover, .btn-primary:hover, .btn-default.hover, .btn-default:hover, .btn-primary.focus, .btn-primary:focus, .open>.dropdown-toggle.btn-primary, .btn-default.focus, .btn-default:focus, .open>.dropdown-toggle.btn-default {
-  outline: none;
-  background-color: #9fa8da;
-  border: none;
-  color: #fafafa;
+.buf-selfmsg .btn-primary.active.focus,
+.buf-selfmsg .btn-primary.active:focus,
+.buf-selfmsg .btn-primary.active:hover,
+.buf-selfmsg .btn-primary:active.focus,
+.buf-selfmsg .btn-primary:active:focus,
+.buf-selfmsg .btn-primary:active:hover,
+.buf-selfmsg .open>.dropdown-toggle.btn-primary.focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-primary:focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-primary:hover,
+.buf-selfmsg .btn-default.active.focus,
+.buf-selfmsg .btn-default.active:focus,
+.buf-selfmsg .btn-default.active:hover,
+.buf-selfmsg .btn-default:active.focus,
+.buf-selfmsg .btn-default:active:focus,
+.buf-selfmsg .btn-default:active:hover,
+.buf-selfmsg .open>.dropdown-toggle.btn-default.focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-default:focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-default:hover,
+.buf-selfmsg .btn-primary.active,
+.buf-selfmsg .btn-primary:active,
+.buf-selfmsg .btn-default.active,
+.buf-selfmsg .btn-default:active,
+.buf-selfmsg .btn-primary.hover,
+.buf-selfmsg .btn-primary:hover,
+.buf-selfmsg .btn-default.hover,
+.buf-selfmsg .btn-default:hover,
+.buf-selfmsg .btn-primary.focus,
+.buf-selfmsg .btn-primary:focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-primary,
+.buf-selfmsg .btn-default.focus,
+.buf-selfmsg .btn-default:focus,
+.buf-selfmsg .open>.dropdown-toggle.btn-default {
+  background-color: #9E9E9E;
 }
 
 #bufferlines .btn {
@@ -187,8 +247,24 @@ button {
   box-shadow: none;
 }
 
-a, a:visited, a:focus, a:hover {
+.buf-privmsg .message a, .buf-privmsg .message a:visited, .buf-privmsg .message a:focus {
   color: #9fd0e6;
+  text-decoration: none;
+}
+
+.buf-privmsg .message a:hover {
+  color: #b8deef;
+  text-decoration: none;
+}
+
+a, a:visited, a:focus,
+.buf-selfmsg .message a, .buf-selfmsg .message a:visited, .buf-selfmsg .message a:focus {
+  color: #007ba8;
+  text-decoration: none;
+}
+
+a:hover, .buf-selfmsg .message a:hover {
+  color: #1592bf;
   text-decoration: none;
 }
 
@@ -1036,41 +1112,64 @@ body {
 .cwf-darkgray {
     color: #5b5b5b;
 }
-.cwf-red {
-    color: #af2513;
+.cwf-red, .cwf-lightred {
+    color: #F44336;
 }
-.cwf-lightred {
-    color: #c15951;
+.buf-err .message .cwf-lightred,
+.buf-err .message .cwf-red,
+.buf-privmsg .message .cwf-lightred,
+.buf-privmsg .message .cwf-red {
+    color: #EF9A9A;
 }
-.cwf-green {
-    color: #7ead18;
+.cwf-green, .cwf-lightgreen {
+    color: #4CAF50;
 }
-.cwf-lightgreen {
-    color: #a0ba53;
+.buf-err .message .cwf-lightgreen,
+.buf-err .message .cwf-green,
+.buf-privmsg .message .cwf-lightgreen,
+.buf-privmsg .message .cwf-green {
+    color: #A5D6A7;
 }
 .cwf-brown {
-    color: #ad6e30;
+    color: #795548;
+}
+.buf-err .message .cwf-brown,
+.buf-privmsg .message .cwf-brown {
+    color: #BCAAA4;
 }
 .cwf-yellow {
-    color: #dbb008;
+    color: #FFEB3B;
 }
-.cwf-blue {
-    color: #007ba8;
+.buf-err .message .cwf-yellow,
+.buf-privmsg .message .cwf-yellow {
+    color: #FFF59D;
 }
-.cwf-lightblue {
-    color: #63b3d3;
+.cwf-blue, .cwf-lightblue {
+    color: #2196F3;
 }
-.cwf-magenta {
+.buf-err .message .cwf-lightblue,
+.buf-err .message .cwf-blue,
+.buf-privmsg .message .cwf-lightblue,
+.buf-privmsg .message .cwf-blue {
+    color: #81D4FA;
+}
+.cwf-magenta, .cwf-lightmagenta {
     color: #856a8c;
 }
-.cwf-lightmagenta {
+.buf-err .message .cwf-lightmagenta,
+.buf-err .message .cwf-magenta,
+.buf-privmsg .message .cwf-lightmagenta,
+.buf-privmsg .message .cwf-magenta {
     color: #bca0bc;
 }
-.cwf-cyan {
-    color: #1f8391;
+.cwf-cyan, .cwf-lightcyan {
+    color: #0097A7;
 }
-.cwf-lightcyan {
-    color: #46847e;
+.buf-err .message .cwf-lightcyan,
+.buf-err .message .cwf-cyan,
+.buf-privmsg .message .cwf-lightcyan,
+.buf-privmsg .message .cwf-cyan {
+    color: #80DEEA;
 }
 .cwf-gray {
     color: #b3b3b3;
