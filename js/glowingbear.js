@@ -28,7 +28,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     };
 
     $scope.command = '';
-    $scope.themes = ['iYIs', 'light-iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
+    $scope.themes = ['iYIs', 'light-iYIs', 'light-1-iYIs', 'dark', 'light', 'black', 'dark-spacious', 'blue', 'base16-default', 'base16-light', 'base16-mocha', 'base16-solarized-dark', 'base16-solarized-light'];
     $scope.jumpToOptions = [
       {id: 1, name: 'default'},
       {id: 2, name: 'always visiable if necessary'},
