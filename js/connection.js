@@ -36,7 +36,7 @@ weechat.factory('connection',
             // Helper methods for initialization commands
             var _initializeConnection = function(passwd) {
                 // Escape comma in password (#937)
-                passwd = passwd.replace(',', '\\,');
+                passwd = passwd.toString().replace(',', '\\,');
                 // This is not the proper way to do this.
                 // WeeChat does not send a confirmation for the init.
                 // Until it does, We need to "assume" that formatInit
@@ -212,7 +212,11 @@ weechat.factory('connection',
                                    function() {
                                        // Will set models.wconfig['weechat.look.buffer_time_format']
                                        _parseWeechatTimeFormat();
-                   });
+                    });
+
+                    // Fetch nick completion config
+                    fetchConfValue('weechat.completion.nick_completer');
+                    fetchConfValue('weechat.completion.nick_add_space');
 
                     _requestSync();
                     $log.info("Connected to relay");

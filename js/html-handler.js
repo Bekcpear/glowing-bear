@@ -24,8 +24,6 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
   var readmarkerAttr = [];
   // [0] -> flash action timer promise
   // [1] -> showAndFlash :: waiting showing timer
-  // [2] -> refresh :: waiting deleting timer
-  // [3] -> refresh :: waiting deleting timer
 
   var resetInput = function(uuidOnly, isiOS) {
 
@@ -484,58 +482,20 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
     if (! readmarker && action !== "refresh") return false;
 
     switch (action) {
-      case "refresh":
-        $rootScope.readmarkerRefreshing = true;
-        var lasttbody = document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline')[document.getElementById('bufferlines').getElementsByTagName('table')[0].getElementsByClassName('bufferline').length - 1].parentNode;
-
-        var deleteLag = 0;
+      case "hide":
+        var hideLag = 500;
         if ( readmarker !== undefined ) {
           readmarker.style.transitionProperty = '';
-          readmarker.style.transitionDuration = '0.5s';
+          readmarker.style.transitionDuration = hideLag / 1000 + 's';
           readmarker.style.height = '0';
-          deleteLag = 501;
-          if ( lasttbody.getElementsByClassName('readmarker').length > 0 ) {
-            $timeout.cancel(readmarkerAttr[3]);
-            readmarkerAttr[3] = $timeout(function() {
-              $rootScope.readmarkerRefreshing = false;
-            }, deleteLag);
-            return true;
-          }
         }
-        $timeout.cancel(readmarkerAttr[2]);
-        readmarkerAttr[2] = $timeout(function() {
-          if (deleteLag !== 0) {
-            readmarker.parentElement.removeChild(readmarker);
-            lasttbody.removeChild(lasttbody.getElementsByClassName('fclear')[0]);
-          }
-
-          var rdmTr = document.createElement('tr');
-          rdmTr.setAttribute("class", "readmarker");
-          rdmTr.setAttribute("style", "height: 0;");
-          var rdmTd = document.createElement('td');
-          rdmTd.setAttribute("colspan", "3");
-          var rdmHr = document.createElement("hr");
-          rdmHr.setAttribute("id", "readmarker");
-
-          rdmTd.appendChild(rdmHr);
-          rdmTr.appendChild(rdmTd);
-
-          var fclear = document.createElement("tr");
-          fclear.setAttribute("class", "fclear");
-
-          lasttbody.appendChild(rdmTr);
-          lasttbody.appendChild(fclear);
-
-          $rootScope.readmarkerRefreshing = false;
-        }, deleteLag);
-        break;
+        return hideLag;
       case "show":
-        var flashLag = 0;
+        var flashLag = 500;
         if (parseInt(window.getComputedStyle(readmarker, null).getPropertyValue("height")) !== 20) {
           readmarker.style.transitionProperty = '';
-          readmarker.style.transitionDuration = ''; // default duration 0.5s, according to CSS file, iYIs.css
+          readmarker.style.transitionDuration = flashLag / 1000 + 's';
           readmarker.style.height = '20px';
-          flashLag = 501;
         }
         return flashLag;
       case "showAndFlash":
@@ -553,6 +513,9 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
               readmarker.style.transitionDuration = '0.5s';
               readmarker.style.backgroundColor = 'rgba(0, 0, 0, 0)';
             }, 500);
+          }
+          if ($rootScope.bufferBottom) {
+            document.getElementById("end-of-buffer").scrollIntoView();
           }
         }, flashLag);
         break;

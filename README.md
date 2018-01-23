@@ -1,4 +1,4 @@
-# A web client for WeeChat [![Build Status](https://api.travis-ci.org/glowing-bear/glowing-bear.png)](https://travis-ci.org/glowing-bear/glowing-bear?branch=master)
+# A web client for WeeChat
 
 Glowing Bear is a web frontend for the [WeeChat](https://weechat.org) IRC client and strives to be a modern interface. It relies on WeeChat to do all the heavy lifting and then provides some nice features on top of that, like embedding images, videos, and other content. The best part, however, is that you can use it from any modern internet device -- whether it's a computer, tablet, or smart phone -- and all your stuff is there, wherever you are. You don't have to deal with the messy technical details, and all you need to have installed is a browser or our app.
 
@@ -10,19 +10,22 @@ Glowing Bear connects to the WeeChat instance you're already running (version 0.
 	/relay add weechat 9001
 	/set relay.network.password YOURPASSWORD
 
-Now point your browser to the [Glowing Bear](http://www.glowing-bear.org)! If you're having trouble connecting, check that the host and port of your WeeChat host are entered correctly, and that your server's firewall permits incoming connections on the relay port (9001 in this example).
+Now point your browser to the [Glowing Bear](https://r.ume.ink)! If you're having trouble connecting, check that the host and port of your WeeChat host are entered correctly, and that your server's firewall permits incoming connections on the relay port (9001 in this example).
 
-**Please note that the above instructions set up an unencrypted relay, and all your data will be transmitted in clear.** You should not use this over the internet. We strongly recommend that you set up encryption if you want to keep using Glowing Bear. There's a guide on setting it up with Let's Encrypt on the landing page of the [next version of Glowing Bear](https://latest.glowing-bear.org), under "Getting Started". Ask us in `#glowing-bear` on freenode if something is unclear.
+**Please note that the above instructions set up an unencrypted relay, and all your data will be transmitted in clear.** You should not use this over the internet. We strongly recommend that you set up encryption if you want to keep using Glowing Bear.
 
-You can run Glowing Bear in many ways:
+  There's a guide on setting it up with Let's Encrypt on the landing page of the [next version of Glowing Bear](https://latest.glowing-bear.org), under "Getting Started". Ask us in `#glowing-bear` on freenode if something is unclear.
 
- * like any other webpage
- * Chrome app ("Tools", then "Create application shortcuts")
- * Android Chrome app, a full-screen experience ("Add to homescreen").
- * [Android app](https://play.google.com/store/apps/details?id=com.glowing_bear) that you can install from the Google Play Store
- * Electron app, for Windows, Linux and MacOSX. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}```
+  You can run Glowing Bear in many ways:
 
-<a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a>
+   * like any other webpage
+   * Chrome app ("Tools", then "Create application shortcuts")
+   * Android Chrome app, a full-screen experience ("Add to homescreen").
+   * Electron app for Windows, Linux and macOS. ```npm install; npm install electron-packager; npm run build-electron-{windows, darwin, linux}``` (choose your platform from the list, e.g. `build-electron-darwin` for macOS)
+
+  <a href="https://play.google.com/store/apps/details?id=com.glowing_bear"><img alt="Android app on Google Play" src="/assets/img/badge_playstore.png" /></a>
+
+  (Just for official version of glowing bear)
 
 ## Screenshots
 
@@ -30,11 +33,9 @@ You can run Glowing Bear in many ways:
 
 Running in Chromium browser:
 
-![Glowing bear screenshot iYIs version](https://p.ume.ink/i/17/7b6021f07d6b78c895abd516f5ffe5024d8a81.png)
+![Glowing bear screenshot iYIs version](./gb.png)
 
-![Glowing bear screenshot iYIs version 1](https://p.ume.ink/i/f6/2e7f21c2c41fdf8ea83340b0149ce58ace330f.png)
-
-![Glowing bear screenshot iYIs version 2](https://p.ume.ink/i/79/05afb7cfc6602cb0cc56a6853cd286c0a70ab9.gif)
+![Glowing bear screenshot iYIs version gif](./gb.gif)
 
 **Official version**
 

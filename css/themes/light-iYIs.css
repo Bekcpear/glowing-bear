@@ -717,7 +717,7 @@ body {
 
 #bufferlines .readmarker {
   display: block;
-  height: 20px;
+  height: 0;
   float: left;
   clear: both;
   width: 100%;
@@ -803,7 +803,7 @@ body {
   height: 20px;
   max-height: 20px;
   display: none;
-  overflow: hidden;
+  overflow: auto;
   position: absolute;
   left: 0;
   border: none;

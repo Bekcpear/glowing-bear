@@ -35,6 +35,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       {id: 3, name: 'always hiding (exclude jumpToBottom)'}
     ];
 
+    // Current swipe status. Values:
+    // +1: bufferlist open, nicklist closed
+    //  0: bufferlist closed, nicklist closed
+    // -1: bufferlist closed, nicklist open
+    $scope.swipeStatus = 1;
+
     // Initialise all our settings, this needs to include all settings
     // or else they won't be saved to the localStorage.
     settings.setDefaults({
@@ -47,6 +53,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         'howToShowJumpTo': {id: 1, name: 'default'},
         'ctrlentertosend': false,
         'nonicklist': utils.isMobileUi(),
+        'alwaysnicklist': false, // only significant on mobile
         'noembed': true,
         'onlyUnread': false,
         'hotlistsync': true,
@@ -168,13 +175,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         // Send a request for the nicklist if it hasn't been loaded yet
         if (!ab.nicklistRequested()) {
             connection.requestNicklist(ab.id, function() {
-                $scope.showNicklist = $scope.updateShowNicklist();
+                $scope.updateShowNicklist();
                 // Scroll after nicklist has been loaded, as it may break long lines
                 $rootScope.scrollWithBuffer(true);
             });
         } else {
             // Check if we should show nicklist or not
-            $scope.showNicklist = $scope.updateShowNicklist();
+            $scope.updateShowNicklist();
         }
 
         if (ab.requestedLines < $scope.lines_per_screen) {
@@ -224,6 +231,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         // Clear search term on buffer change
         $scope.search = '';
+        $scope.search_placeholder = 'Search';
 
         if (!utils.isMobileUi()) {
             // This needs to happen asynchronously to prevent the enter key handler
@@ -330,6 +338,42 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         return document.getElementById('content').getAttribute('sidebar-state') === 'visible';
     };
 
+    $scope.swipeRight = function() {
+        // Depending on swipe state
+        if ($scope.swipeStatus === 1) {
+            /* do nothing */
+        } else if ($scope.swipeStatus === 0) {
+            $scope.showSidebar(); // updates swipe status to 1
+        } else if ($scope.swipeStatus === -1) {
+            // hide nicklist
+            $scope.swipeStatus = 0;
+            $scope.updateShowNicklist();
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.updateShowNicklist();
+            $scope.hideSidebar();
+        }
+    };
+
+    $rootScope.swipeLeft = function() {
+        // Depending on swipe state, ...
+        if ($scope.swipeStatus === 1) {
+            $scope.hideSidebar(); // updates swipe status to 0
+        } else if ($scope.swipeStatus === 0) {
+            // show nicklist
+            $scope.swipeStatus = -1;
+            $scope.updateShowNicklist();
+        } else if ($scope.swipeStatus === -1) {
+            /* do nothing */
+        } else {
+            console.log("Weird swipe status:", $scope.swipeStatus);
+            $scope.swipeStatus = 0; // restore sanity
+            $scope.updateShowNicklist();
+            $scope.hideSidebar();
+        }
+    };
+
     $scope.showSidebar = function() {
         document.getElementById('sidebar').setAttribute('data-state', 'visible');
         document.getElementById('content').setAttribute('sidebar-state', 'visible');
@@ -339,14 +383,17 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
                 $timeout(function(){elem.blur();});
             });
         }
+        $scope.swipeStatus = 1;
     };
 
     $rootScope.hideSidebar = function() {
 
         if (utils.isMobileUi()) {
+            // make sure nicklist is hidden
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
+        $scope.swipeStatus = 0;
     };
     settings.addCallback('autoconnect', function(autoconnect) {
         if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
@@ -365,21 +412,21 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         }
     };
 
-    // Open and close panels while on mobile devices through swiping
-    $scope.openNick = function() {
-        if (utils.isMobileUi()) {
-            if (settings.nonicklist) {
-                settings.nonicklist = false;
-            }
+    // Watch model and update channel sorting when it changes
+    var set_filter_predicate = function(orderbyserver) {
+        if ($rootScope.showJumpKeys) {
+            $rootScope.predicate = '$jumpKey';
+        } else if (orderbyserver) {
+            $rootScope.predicate = 'serverSortKey';
+        } else {
+            $rootScope.predicate = 'number';
         }
     };
 
-    $scope.closeNick = function() {
-        if (utils.isMobileUi()) {
-            if (!settings.nonicklist) {
-                settings.nonicklist = true;
-            }
-        }
+    settings.addCallback('orderbyserver', set_filter_predicate);
+    // convenience wrapper for jump keys
+    $rootScope.refresh_filter_predicate = function() {
+        set_filter_predicate(settings.orderbyserver);
     };
 
     // Watch model and update channel sorting when it changes
@@ -538,6 +585,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             // Wrap in a condition so we save ourselves the $apply if nothing changes (50ms or more)
             if ($scope.wasMobileUi && !utils.isMobileUi()) {
                 $scope.showSidebar();
+                $scope.updateShowNicklist();
             }
             $scope.wasMobileUi = utils.isMobileUi();
             $scope.calculateNumLines();
@@ -579,7 +627,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         if (bottom) {
             eob.scrollIntoView();
         }
-        $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight;
+        $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight + 5;
         if ( $scope.bufferSwitchStat === 0 ) {
             $timeout(function(){
                 $rootScope.updateJumpToButtons();
@@ -590,15 +638,13 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             $rootScope.updateJumpToButtons();
         }
 
-        if ( ! $rootScope.readmarkerRefreshing ) {
-            var rdm = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
-            if ( $rootScope.onfocus === 0
-                && rdm ) {
-                rdm.parentElement.scrollIntoView(true);
-                if (bl.scrollTop - rdm.parentElement.offsetTop > 40
-                 && bl.scrollTop - rdm.parentElement.offsetTop < 50) {
-                    htmlHandler.handleReadmarker("show");
-                }
+        var rdm = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
+        if ( $rootScope.onfocus === 0
+            && rdm ) {
+            rdm.parentElement.scrollIntoView(true);
+            if (bl.scrollTop - rdm.parentElement.offsetTop > 40
+             && bl.scrollTop - rdm.parentElement.offsetTop < 50) {
+                htmlHandler.handleReadmarker("show");
             }
         }
     };
@@ -624,7 +670,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
                     // Switching channels, scroll to read marker
                     if ( ! isAt[1] ) {
                       readmarker.parentElement.scrollIntoView(true);
-                      htmlHandler.handleReadmarker("showAndFlash");
+                      if ($rootScope.jumpToReadmarkerF == true) {
+                        htmlHandler.handleReadmarker("showAndFlash");
+                        $rootScope.jumpToReadmarkerF = false;
+                      } else {
+                        htmlHandler.handleReadmarker("show");
+                      }
                       isAt[1] = true;
                     }
                 } else if (scrollToMention && mention && mention.length != 0) {
@@ -729,9 +780,28 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         return !buffer.hidden;
     };
 
+    // filter bufferlist for search or jump key
+    $rootScope.bufferlistfilter = function(buffer) {
+       if ($rootScope.showJumpKeys) {
+            // filter by jump key
+            if ($rootScope.jumpDecimal === undefined) {
+                // no digit input yet, show all buffers
+                return true;
+            } else {
+                var min_jumpKey = 10 * $rootScope.jumpDecimal,
+                    max_jumpKey = 10 * ($rootScope.jumpDecimal + 1);
+                return (min_jumpKey <= buffer.$jumpKey) &&
+                    (buffer.$jumpKey < max_jumpKey);
+            }
+        } else {
+            // filter by buffer name
+            return buffer.fullName.toLowerCase().indexOf($scope.search.toLowerCase()) !== -1;
+        }
+    };
+
     // Watch model and update show setting when it changes
     settings.addCallback('nonicklist', function() {
-        $scope.showNicklist = $scope.updateShowNicklist();
+        $scope.updateShowNicklist();
         // restore bottom view
         if ($rootScope.connected && $rootScope.bufferBottom) {
             $timeout(function(){
@@ -739,31 +809,37 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             }, 500);
         }
     });
+    settings.addCallback('alwaysnicklist', function() {
+        $scope.updateShowNicklist();
+    });
     $scope.showNicklist = false;
     // Utility function that template can use to check if nicklist should
     // be displayed for current buffer or not
-    // is called on buffer switch
+    // is called on buffer switch and certain swipe actions
     $scope.updateShowNicklist = function() {
-        var ab = models.getActiveBuffer();
-        if (!ab) {
-            return false;
-        }
-        // Check if nicklist is empty
-        if (ab.isNicklistEmpty()) {
-            // Toggle jumpTo button
-            $rootScope.isChatBuffer = false;
-            $rootScope.updateJumpToButtons("init");
-            return false;
-        } else {
-            // Toggle jumpTo button
-            $rootScope.isChatBuffer = true;
-            $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
-        }
-        // Check if option no nicklist is set
-        if (settings.nonicklist) {
-            return false;
-        }
-        return true;
+        $scope.showNicklist = (function() {
+            var ab = models.getActiveBuffer();
+            // Check whether buffer exists and nicklist is non-empty
+            if (!ab || ab.isNicklistEmpty()) {
+                // Toggle jumpTo button
+                $rootScope.isChatBuffer = false;
+                $rootScope.updateJumpToButtons("init");
+                return false;
+            } else {
+                // Toggle jumpTo button
+                $rootScope.isChatBuffer = true;
+                $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+            }
+            // Check if nicklist is disabled in settings (ignored on mobile)
+            if (!utils.isMobileUi() && settings.nonicklist) {
+                return false;
+            }
+            // mobile: hide nicklist unless overriden by setting or swipe action
+            if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
+                return false;
+            }
+            return true;
+        })();
     };
 
 //XXX not sure whether this belongs here
@@ -1042,9 +1118,14 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       }
     }
 
+    var readmarkerHideTimer = undefined;
     var do_refreshReadmarker = function() {
-      htmlHandler.handleReadmarker("refresh");
-      models.getActiveBuffer().tmpLastSeen = models.getActiveBuffer().lines.length - 1;
+      var hideLag = htmlHandler.handleReadmarker("hide");
+      $timeout.cancel(readmarkerHideTimer);
+      readmarkerHideTimer = $timeout(function() {
+        models.getActiveBuffer().tmpLastSeen = models.getActiveBuffer().lines.length - 1;
+        models.getActiveBuffer().lastSeen = models.getActiveBuffer().lines.length - 1;
+      }, hideLag);
     }
 
     settings.addCallback('howToShowJumpTo', function() {
@@ -1054,16 +1135,30 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     $window.onfocus = function() {
       $timeout.cancel($scope.blurTimer);
       $rootScope.onfocus = 1;
+      // the above visibilityChange is for the buffer switching when the whole window is focused
+      var buffer = models.getActiveBuffer();
+      if (buffer !== null) {
+          buffer.unread = 0;
+          buffer.notification = 0;
+          $rootScope.$emit('notificationChanged');
+      }
+      $rootScope.$apply();
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
           do_initAndRefreshJumpTo();
           htmlHandler.handleReadmarker("showAndFlash");
       }
+      var buffer = models.getActiveBuffer();
+      if (buffer !== null) {
+          buffer.unread = 0;
+          buffer.notification = 0;
+          $rootScope.$emit('notificationChanged');
+      }
     };
 
     $window.onblur = function() {
+      $rootScope.lastActiveTime = Date.now();
       $scope.blurTimer = $timeout(function() {
         $rootScope.onfocus = 0;
-        $rootScope.lastActiveTime = Date.now();
         if ($rootScope.bufferBottom) {
           do_refreshReadmarker();
         } else {

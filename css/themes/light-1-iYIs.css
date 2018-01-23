@@ -356,16 +356,15 @@ body {
 }
 
 #bufferlines tbody .fetchmorelines {
-  color: #fafafa;
+  color: #757575;
   padding: 3px 10px;
 }
 
 #bufferlines tbody .fetchmorelines:hover {
-  background-color: #5c6bc0;
 }
 
 #bufferlines tbody .fetchmorelines + span {
-  color: #e0e0e0;
+  color: #9e9e9e;
 }
 
 #bufferlines tbody .bufferline td {
@@ -560,7 +559,7 @@ body {
 
 #bufferlines .readmarker {
   display: block;
-  height: 20px;
+  height: 0;
   float: left;
   clear: both;
   width: 100%;
@@ -646,7 +645,7 @@ body {
   height: 20px;
   max-height: 20px;
   display: none;
-  overflow: hidden;
+  overflow: auto;
   position: absolute;
   left: 0;
   border: none;

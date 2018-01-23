@@ -161,7 +161,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 $rootScope.scrollWithBuffer();
             }
 
-            if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
+            if (!manually && (!buffer.active || !$rootScope.isWindowFocused() || !$rootScope.onfocus)) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');

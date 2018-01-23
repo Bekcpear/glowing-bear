@@ -159,7 +159,7 @@ var UrlPlugin = function(name, urlCallback) {
  * 3. Add it to the plugins array.
  *
  */
-plugins.factory('userPlugins', function($http) {
+plugins.factory('userPlugins', function() {
     // standard JSONp origin policy trick
     var jsonp = function (url, callback) {
         var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
