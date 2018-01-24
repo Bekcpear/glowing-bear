@@ -116,6 +116,7 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
 
     var imgUuidHistElem = document.getElementById("imgur-upload-uuid-hist");
     var imgUuidElem = document.getElementById("imgur-upload-uuid");
+    var imgUuidHistAppendTxt = ''
     if ( imageUuid !== undefined && imageUuid !== '' ) {
       if ( utils.isMobileUi() ) {
           imgUuidElem.style.top    = "initial";
@@ -129,15 +130,16 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
       } else {
         imgUuidElem.textContent = imageUuid;
       }
-      imgUuidHistElem.textContent += "url: " + imageUrl + ", uuid: " + imageUuid + "\n";
+      imgUuidHistAppendTxt = "url: " + imageUrl + ", uuid: " + imageUuid;
       imgUuidElem.style.display = "block";
     } else {
       if ( imgUuidElem.textContent !== '' ) {
         imgUuidElem.textContent += ", <no-uuid>";
       }
-      imgUuidHistElem.textContent += "url: " + imageUrl + ", uuid: <image already exists before upload, so cannot get uuid>\n";
+      imgUuidHistAppendTxt = "url: " + imageUrl + ", uuid: <image already exists before upload, so cannot get uuid>";
     }
-
+    imgUuidHistElem.textContent += imgUuidHistAppendTxt + "\n";
+    console.log("[IMAGE UPLOADED] " + imgUuidHistAppendTxt);
   };
 
   // adjust inputbar height

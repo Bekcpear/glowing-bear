@@ -56,6 +56,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         'alwaysnicklist': false, // only significant on mobile
         'noembed': true,
         'onlyUnread': false,
+        'syncUnreadCounts': true,
         'hotlistsync': true,
         'orderbyserver': true,
         'useFavico': !utils.isCordova(),
@@ -346,8 +347,8 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             $scope.showSidebar(); // updates swipe status to 1
         } else if ($scope.swipeStatus === -1) {
             // hide nicklist
-            $scope.swipeStatus = 0;
-            $scope.updateShowNicklist();
+            if (!settings.alwaysnicklist) $scope.updateShowNicklist();
+            if (!$scope.showNicklist || !settings.alwaysnicklist) $scope.swipeStatus = 0;
         } else {
             console.log("Weird swipe status:", $scope.swipeStatus);
             $scope.swipeStatus = 0; // restore sanity
@@ -362,8 +363,10 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             $scope.hideSidebar(); // updates swipe status to 0
         } else if ($scope.swipeStatus === 0) {
             // show nicklist
-            $scope.swipeStatus = -1;
-            $scope.updateShowNicklist();
+            if (!settings.alwaysnicklist) {
+                $scope.updateShowNicklist();
+                if ($scope.showNicklist) $scope.swipeStatus = -1;
+            }
         } else if ($scope.swipeStatus === -1) {
             /* do nothing */
         } else {
@@ -393,7 +396,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             document.getElementById('sidebar').setAttribute('data-state', 'hidden');
             document.getElementById('content').setAttribute('sidebar-state', 'hidden');
         }
-        $scope.swipeStatus = 0;
+        if ($scope.swipeStatus !== -1) $scope.swipeStatus = 0;
     };
     settings.addCallback('autoconnect', function(autoconnect) {
         if (autoconnect && !$rootScope.connected && !$rootScope.sslError && !$rootScope.securityError && !$rootScope.errorMessage) {
@@ -828,14 +831,16 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             } else {
                 // Toggle jumpTo button
                 $rootScope.isChatBuffer = true;
-                $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+                $timeout(function(){
+                    $rootScope.updateJumpToButtons("init", settings.howToShowJumpTo.id);
+                }, 200);
             }
             // Check if nicklist is disabled in settings (ignored on mobile)
             if (!utils.isMobileUi() && settings.nonicklist) {
                 return false;
             }
             // mobile: hide nicklist unless overriden by setting or swipe action
-            if (utils.isMobileUi() && !settings.alwaysnicklist && $scope.swipeStatus !== -1) {
+            if (utils.isMobileUi() && !settings.alwaysnicklist && ($scope.swipeStatus !== 0 || $scope.bufferSwitchStat !== 2)) {
                 return false;
             }
             return true;
@@ -1146,12 +1151,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
       if ( $rootScope.lastActiveTime !== undefined && Number.isInteger($rootScope.lastActiveTime) && (Date.now() - $rootScope.lastActiveTime) > 300000 ) {
           do_initAndRefreshJumpTo();
           htmlHandler.handleReadmarker("showAndFlash");
-      }
-      var buffer = models.getActiveBuffer();
-      if (buffer !== null) {
-          buffer.unread = 0;
-          buffer.notification = 0;
-          $rootScope.$emit('notificationChanged');
       }
     };
 

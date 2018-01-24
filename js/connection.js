@@ -4,10 +4,11 @@
 var weechat = angular.module('weechat');
 
 weechat.factory('connection',
-                ['$rootScope', '$log', 'handlers', 'models', 'ngWebsockets', function($rootScope,
+                ['$rootScope', '$log', 'handlers', 'models', 'settings', 'ngWebsockets', function($rootScope,
          $log,
          handlers,
          models,
+         settings,
          ngWebsockets) {
 
     var protocol = new weeChat.Protocol();
@@ -198,7 +199,7 @@ weechat.factory('connection',
                     // client will have unread counts (mostly) in sync with
                     // other clients or terminal usage directly.
                     setInterval(function() {
-                        if ($rootScope.connected) {
+                        if ($rootScope.connected && settings.syncUnreadCounts) {
                             _requestHotlist().then(function(hotlist) {
                                 handlers.handleHotlistInfo(hotlist);
 

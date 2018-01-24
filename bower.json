@@ -1,8 +1,8 @@
 {
   "name": "glowing-bear",
-  "description": "A webclient for WeeChat",
+  "description": "A webclient for WeeChat (iYI's version)",
   "version": "0.7.0",
-  "homepage": "https://github.com/glowing-bear/glowing-bear",
+  "homepage": "https://github.com/Bekcpear/glowing-bear",
   "license": "GPLv3",
   "private": true,
   "dependencies": {

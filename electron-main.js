@@ -125,7 +125,7 @@
         submenu: [
         {
             label: 'Learn More',
-            click: function() { require('electron').shell.openExternal('https://github.com/glowing-bear/glowing-bear'); }
+            click: function() { require('electron').shell.openExternal('https://github.com/Bekcpear/glowing-bear'); }
         },
         ]
     },
@@ -209,7 +209,7 @@
             console.log('Unable to read init.json: ', e);
         }
         const bounds = (data && data.bounds) ? data.bounds : {width: 1280, height:800 };
-        var bwdata = {width: bounds.width, height: bounds.height, 'min-width': 1024, 'min-height': 600, 'autoHideMenuBar': true, 'web-security': true, 'java': false, 'accept-first-mouse': true, defaultEncoding: 'UTF-8', 'icon':'file://'+__dirname + '/assets/img/favicon.png'};
+        var bwdata = {width: bounds.width, height: bounds.height, autoHideMenuBar: true, acceptFirstMouse: true, darkTheme: true, show: false, backgroundColor: '#212121', defaultEncoding: 'UTF-8', icon: nativeImage.createFromPath(__dirname + '/assets/img/favicon.png'), webPreferences: {webSecurity: true}};
         // Remembe window position
         if (data && data.bounds.x && data.bounds.y) {
             bwdata.x = data.bounds.x;
@@ -217,8 +217,11 @@
         }
 
         mainWindow = new BrowserWindow(bwdata);
-        mainWindow.loadURL('file://' + __dirname + '/electron-start.html');
-        mainWindow.focus();
+        mainWindow.loadURL(`file://${__dirname}/electron-start.html`);
+        mainWindow.once('ready-to-show', () => {
+            mainWindow.show();
+            mainWindow.focus();
+        })
 
         // Listen for badge changes
         ipcMain.on('badge', function(event, arg) {

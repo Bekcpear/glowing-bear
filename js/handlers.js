@@ -361,7 +361,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 // If buffer is active in gb, but not active in WeeChat the
                 // hotlist in WeeChat will increase but we should ignore that
                 // in gb.
-                if (buffer.active) {
+                if (buffer.active && $rootScope.onfocus) {
                     return;
                 }
                 // 1 is message

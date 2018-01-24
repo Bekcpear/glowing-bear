@@ -586,9 +586,9 @@ body {
   padding: 10px 0 20px 0;
   overflow-y: overlay;
   overflow-x: hidden;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  box-shadow: 0 -5px 5px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 -5px 5px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 -5px 5px rgba(0,0,0,0.5);
   top: 60px;
   bottom: 0;
 }
@@ -833,7 +833,8 @@ body {
   #nicklist {
     margin: 0;
     text-align: left;
-    padding-bottom: 50px;
+    height: calc(100% - 94px);
+    bottom: 34px;
   }
 
   .content[sidebar-state=visible] #nicklist {
@@ -898,6 +899,11 @@ body {
     padding: 7px 95px 7px 16px;
     max-height: 114px;
     font-family: "Roboto Mono", Inconsolata, Consolas, "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", Monaco, "Ubuntu Mono", monospace;
+  }
+
+  #nicklist {
+    height: calc(100% - 154px);
+    bottom: 94px;
   }
 
   #bufferlines {

@@ -8,7 +8,10 @@ weechat.factory('ptpb', ['$rootScope', function($rootScope) {
     var process = function(image, callback) {
 
         // Is it an image?
-        if (!image || !image.type.match(/image.*/)) return;
+        if (!image || !image.type.match(/image.*/)) {
+            alert("Image only!");
+            return;
+        }
 
         upload(image, callback);
     };
