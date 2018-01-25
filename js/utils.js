@@ -14,16 +14,16 @@ weechat.factory('utils', function() {
 	    });
 	};
 
-    var isMobileUi = function() {
-        // TODO don't base detection solely on screen width
-        // You are right. In the meantime I am renaming isMobileDevice to isMobileUi
-        var mobile_cutoff = 600;
-        return (document.body.clientWidth < mobile_cutoff);
-    };
-
     var isiOS = function() {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
       return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    };
+
+    var isMobileUi = function(extra) {
+        // TODO don't base detection solely on screen width
+        // You are right. In the meantime I am renaming isMobileDevice to isMobileUi
+        var mobile_cutoff = 600;
+        return ((document.body.clientWidth < mobile_cutoff) || (extra === "includeiOS" && isiOS()));
     };
 
     var isCordova = function() {

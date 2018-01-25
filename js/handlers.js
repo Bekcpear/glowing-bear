@@ -3,7 +3,7 @@
 
 var weechat = angular.module('weechat');
 
-weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, notifications, bufferResume) {
+weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'utils', 'notifications', 'bufferResume', function($rootScope, $log, models, plugins, utils, notifications, bufferResume) {
 
     var handleVersionInfo = function(message) {
         var content = message.objects[0].content;
@@ -161,7 +161,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 $rootScope.scrollWithBuffer();
             }
 
-            if (!manually && (!buffer.active || !$rootScope.isWindowFocused() || !$rootScope.onfocus)) {
+            if (!manually && (!buffer.active || !$rootScope.isWindowFocused() || (!$rootScope.onfocus && !utils.isMobileUi("includeiOS")))) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
                     buffer.unread++;
                     $rootScope.$emit('notificationChanged');
@@ -361,7 +361,7 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 // If buffer is active in gb, but not active in WeeChat the
                 // hotlist in WeeChat will increase but we should ignore that
                 // in gb.
-                if (buffer.active && $rootScope.onfocus) {
+                if (buffer.active && ($rootScope.onfocus || utils.isMobileUi("includeiOS"))) {
                     return;
                 }
                 // 1 is message

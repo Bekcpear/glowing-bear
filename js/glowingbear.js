@@ -64,7 +64,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         'fontsize': '14px',
         'fontfamily': (utils.isMobileUi() ? 'Roboto Mono, Helvetica, Noto Sans Mono CJK SC, Noto Sans Mono CJK TC, Heiti SC, Heiti TC, sans-serif' : 'Roboto Mono, Inconsolata, Consolas, Noto Sans Mono CJK SC, Noto Sans Mono CJK TC, Monaco, Ubuntu Mono, monospace'),
         'readlineBindings': false,
-        'enableJSEmoji': !utils.isMobileUi(),
+        'enableJSEmoji': !utils.isMobileUi("includeiOS"),
         'enableMathjax': false,
         'enableQuickKeys': true,
         'customCSS': '',
@@ -234,7 +234,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         $scope.search = '';
         $scope.search_placeholder = 'Search';
 
-        if (!utils.isMobileUi()) {
+        if (!utils.isMobileUi("includeiOS")) {
             // This needs to happen asynchronously to prevent the enter key handler
             // of the input bar to be triggered on buffer switch via the search.
             // Otherwise its current contents would be sent to the new buffer
@@ -328,7 +328,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
     }
 
     if (!settings.fontfamily) {
-        if (utils.isMobileUi()) {
+        if (utils.isMobileUi("includeiOS")) {
             settings.fontfamily = 'sans-serif';
         } else {
             settings.fontfamily = "Inconsolata, Consolas, Monaco, Ubuntu Mono, monospace";
@@ -523,7 +523,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
     $scope.setActiveBuffer = function(bufferId, key) {
         // If we are on mobile we need to collapse the menu on sidebar clicks
-        // We use 968 px as the cutoff, which should match the value in glowingbear.css
+        // We use 600 px as the cutoff, which should match the value in glowingbear.css
         if (utils.isMobileUi()) {
             $scope.hideSidebar();
         }
@@ -624,11 +624,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         }
     };
 
+    $scope.rdmdisplayedOnAct = false;
     $rootScope.updateBufferBottom = function(bottom) {
         var eob = document.getElementById("end-of-buffer");
         var bl = document.getElementById('bufferlines');
         if (bottom) {
-            eob.scrollIntoView();
+            htmlHandler.scrollToBottom();
         }
         $rootScope.bufferBottom = eob.offsetTop <= bl.scrollTop + bl.clientHeight + 5;
         if ( $scope.bufferSwitchStat === 0 ) {
@@ -642,13 +643,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         }
 
         var rdm = document.querySelectorAll(".readmarker")[document.querySelectorAll(".readmarker").length - 1];
-        if ( $rootScope.onfocus === 0
-            && rdm ) {
+        if ( $rootScope.onfocus === 0 && !utils.isMobileUi("includeiOS")
+              && rdm && !$scope.rdmdisplayedOnAct
+              && bl.scrollTop - rdm.parentElement.offsetTop > 60) {
             rdm.parentElement.scrollIntoView(true);
-            if (bl.scrollTop - rdm.parentElement.offsetTop > 40
-             && bl.scrollTop - rdm.parentElement.offsetTop < 50) {
-                htmlHandler.handleReadmarker("show");
-            }
+            htmlHandler.handleReadmarker("show");
+            $scope.rdmdisplayedOnAct = true;
         }
     };
     $rootScope.scrollWithBuffer = function(scrollToReadmarker, moreLines, scrollToMention) {
@@ -693,8 +693,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
                     bl.scrollTop = bl.scrollHeight - bl.clientHeight - sVal;
                 } else {
                     // New message, scroll with buffer (i.e. to bottom)
-                    var eob = document.getElementById("end-of-buffer");
-                    eob.scrollIntoView();
+                    if ($rootScope.bufferBottom) htmlHandler.scrollToBottom();
                 }
                 $rootScope.updateBufferBottom();
             }
@@ -1051,11 +1050,11 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
 
         var jt_toBottom = function() {
             htmlHandler.toggleJumpTo("toBottom", 0);
-            if ($rootScope.onfocus === 1) {
+            if ($rootScope.onfocus === 1 || utils.isMobileUi("includeiOS")) {
                 models.getActiveBuffer().tmpLastSeen = 0;
             }
             $timeout(function(){
-                if ( window.getComputedStyle(document.getElementById("sidebar"),null).getPropertyValue("transform") !== "matrix(1, 0, 0, 1, 0, 0)" ) {
+                if ( window.getComputedStyle(document.getElementById("sidebar"),null).getPropertyValue("transform") !== "matrix(1, 0, 0, 1, 0, 0)" && !utils.isMobileUi("includeiOS") ) {
                   document.getElementById('sendMessage').focus();
                 }
             }, 200);
@@ -1065,9 +1064,6 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
             jt_toBottom();
             return true;
         }
-
-        var eob = document.getElementById("end-of-buffer");
-        var bl = document.getElementById('bufferlines');
 
         // toggle jumpToBottom
         if ( ! $rootScope.bufferBottom ) {
@@ -1165,6 +1161,12 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$window', 
         }
       }, 1000);
     };
+
+    $scope.$watchCollection('bufferlines', function(newBufferlines, oldBufferlines){
+      if ($rootScope.bufferBottom) {
+        if (!utils.isMobileUi("includeiOS") && $rootScope.onfocus === 0) $scope.rdmdisplayedOnAct = false;
+      }
+    });
 
     $rootScope.m2toggleJumpTo = function(btn, mouseenter) {
       if ( settings.howToShowJumpTo.id !== 1 ) return;

@@ -25,6 +25,11 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
   // [0] -> flash action timer promise
   // [1] -> showAndFlash :: waiting showing timer
 
+  var scrollToBottom = function() {
+    var buflines = document.getElementById("bufferlines").querySelectorAll("tr");
+    buflines[buflines.length - 1].scrollIntoView(true);
+  }
+
   var resetInput = function(uuidOnly, isiOS) {
 
     // reset imgur-upload-uuid
@@ -516,18 +521,16 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
               readmarker.style.backgroundColor = 'rgba(0, 0, 0, 0)';
             }, 500);
           }
-          if ($rootScope.bufferBottom) {
-            document.getElementById("end-of-buffer").scrollIntoView();
-          }
+          if ($rootScope.bufferBottom) scrollToBottom();
         }, flashLag);
         break;
       default:
         console.log("handle readmarker error: invalid action: " + action);
     }
-
   };
 
   return {
+    scrollToBottom: scrollToBottom,
     resetInput: resetInput,
     msgSegNotify: msgSegNotify,
     adjUuidSegBar: adjUuidSegBar,
