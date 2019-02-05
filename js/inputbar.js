@@ -187,12 +187,13 @@ weechat.directive('inputBar', function() {
                     // Empty the input after it's sent
                     $scope.command = '';
                     htmlHandler.resetInput(false, isiOS);
+                    htmlHandler.scrollToBottom(true);
                     $scope.noinput = true;
 
                 }
 
                 // New style clearing requires this, old does not
-                if (models.version[0] >= 1) {
+                if (settings.hotlistsync && models.version[0] >= 1) {
                     connection.sendHotlistClear();
                 }
 
@@ -200,7 +201,12 @@ weechat.directive('inputBar', function() {
             };
 
             //XXX THIS DOES NOT BELONG HERE!
-            $rootScope.addMention = function(prefix, content) {
+            $rootScope.addMention = function(bufferline, content) {
+                if (!bufferline.showHiddenBrackets) {
+                    // the line is a notice or action or something else that doesn't belong
+                    return;
+                }
+                var prefix = bufferline.prefix;
                 // Extract nick from bufferline prefix
                 var nick = prefix[prefix.length - 1].text;
 
@@ -495,6 +501,10 @@ weechat.directive('inputBar', function() {
                         buffer.unread = 0;
                         buffer.notification = 0;
                     });
+                    var servers = models.getServers();
+                    _.each(servers, function(server) {
+                        server.unread = 0;
+                    });
                     connection.sendHotlistClearAll();
                 }
 
@@ -673,6 +683,24 @@ weechat.directive('inputBar', function() {
                     $scope.getInputNode().focus();
                 }, 0);
 
+                return true;
+            };
+            $scope.inputPasted = function(e) {
+                if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    var sendImageUrl = function(imageUrl) {
+                        if(imageUrl !== undefined && imageUrl !== '') {
+                            $rootScope.insertAtCaret(String(imageUrl));
+                        }   
+                    };  
+
+                    for (var i = 0; i < e.clipboardData.files.length; i++) {
+                        imgur.process(e.clipboardData.files[i], sendImageUrl);
+                    }   
+                    return false;
+                }   
                 return true;
             };
         }]

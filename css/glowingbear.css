@@ -224,6 +224,8 @@ input[type=text], input[type=password], #sendMessage {
     overflow-x: hidden;
     padding-top: 35px; /* topbar */
     padding-bottom: 1px; /* need to force a padding here */
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
     font-size: smaller;
     transition:0.2s ease-in-out;
     z-index: 2;
@@ -333,6 +335,7 @@ input[type=text], input[type=password], #sendMessage {
 .content {
     height: 100%;
     min-height: 100%;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 #bufferlines {
@@ -389,6 +392,7 @@ td.time {
     width: 100%;
     -webkit-transition:0.2s ease-in-out all;
     transition:0.2s ease-in-out all;
+    margin-bottom: env(safe-area-inset-bottom); /* margin for home-indicator on iPhone X */
     z-index: 1;
 }
 .content[sidebar-state=visible] .footer {
@@ -834,6 +838,10 @@ img.emojione {
         bottom: 0px;
     }
 
+    .content[sidebar-state=visible] #nicklist {
+        display: none;
+    }
+
     .navbar-fixed-bottom {
         margin: 0;
     }
@@ -848,6 +856,11 @@ img.emojione {
 
     .nav-pills li a {
         padding: 10px 15px;
+    }
+
+    .nav-pills li.buffer {
+        min-height: 30px;
+        max-height: 30px;
     }
 
     #bufferlines {

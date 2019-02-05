@@ -25,7 +25,15 @@ weechat.factory('htmlHandler', ['$rootScope', '$timeout', 'utils', function($roo
   // [0] -> flash action timer promise
   // [1] -> showAndFlash :: waiting showing timer
 
-  var scrollToBottom = function() {
+  var scrollToBottom = function(delay) {
+    if (delay) {
+      $timeout(function (){
+        if (! document.getElementById("end-of-buffer").offsetTop <= document.getElementById('bufferlines').scrollTop + document.getElementById('bufferlines').clientHeight + 5) {
+          scrollToBottom();
+        }
+      }, 500)
+      return
+    }
     var buflines = document.getElementById("bufferlines").querySelectorAll("tr");
     buflines[buflines.length - 1].scrollIntoView(true);
   }

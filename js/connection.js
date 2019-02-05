@@ -195,17 +195,19 @@ weechat.factory('connection',
                         handlers.handleHotlistInfo(hotlist);
 
                     });
-                    // Schedule hotlist syncing every so often so that this
-                    // client will have unread counts (mostly) in sync with
-                    // other clients or terminal usage directly.
-                    setInterval(function() {
-                        if ($rootScope.connected && settings.syncUnreadCounts) {
-                            _requestHotlist().then(function(hotlist) {
-                                handlers.handleHotlistInfo(hotlist);
+                    if (settings.hotlistsync) {
+                        // Schedule hotlist syncing every so often so that this
+                        // client will have unread counts (mostly) in sync with
+                        // other clients or terminal usage directly.
+                        setInterval(function() {
+                            if ($rootScope.connected) {
+                                _requestHotlist().then(function(hotlist) {
+                                    handlers.handleHotlistInfo(hotlist);
 
-                            });
-                        }
-                    }, 60000); // Sync hotlist every 60 second
+                                });
+                            }
+                        }, 60000); // Sync hotlist every 60 second
+                    }
 
 
                     // Fetch weechat time format for displaying timestamps
